@@ -24,7 +24,7 @@ demo), so these are being converted one at a time rather than in bulk.
       to itself (even though nothing downstream consumes the selection,
       matching the legacy demo exactly) or its own button label never
       updates after picking an item.
-- [x] `fitness` -> `web/src/pages/gallery/Fitness.vue` (commit `PENDING`) -
+- [x] `fitness` -> `web/src/pages/gallery/Fitness.vue` (commit `ef7e880`) -
       purely static charts, no interactivity/state beyond what jui-chart-
       vue's brushes give for free (pie hover/click, tooltip) - heatmap cohort
       grid + 4 demographic pies + dual-axis line/step growth chart, all
