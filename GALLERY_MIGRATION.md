@@ -129,7 +129,7 @@ demo), so these are being converted one at a time rather than in bulk.
         path). Added a defensive guard: skip the update entirely when the
         computed height isn't positive, rather than ever applying a
         nonsensical size.
-- [x] `gps` -> `web/src/pages/gallery/GPS.vue` (commit `PENDING`) - a
+- [x] `gps` -> `web/src/pages/gallery/GPS.vue` (commit `e74b057`) - a
       full-screen "GPS radar" dashboard: a world-map radar sweep
       (map.flightroute brush + a custom rotating-sweep widget + a
       map.minimap overview), a compass gauge (custom widget), real-time
