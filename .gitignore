@@ -10,8 +10,3 @@
 node_modules/
 web/dist/
 web/src/generated/
-
-# Python / uv
-.venv/
-__pycache__/
-*.pyc
