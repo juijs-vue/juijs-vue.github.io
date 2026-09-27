@@ -64,7 +64,7 @@ demo), so these are being converted one at a time rather than in bulk.
         closed) the row before the picker's selection ever landed. Fixed by
         only committing explicitly once the picker actually makes a
         selection, not on blur.
-      Follow-up fix (commit `PENDING`): the Total row's Cash/Card columns
+      Follow-up fix (commit `47600e5`): the Total row's Cash/Card columns
       didn't line up with the grid's own (a separate plain `<table>` can't
       guarantee matching widths against a column with no explicit `width`).
       Fixed properly by adding a real `footer-<key>`-slot-based `<tfoot>` to
