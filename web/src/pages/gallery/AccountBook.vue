@@ -297,19 +297,11 @@ function onCalendarDayClick(no: number) {
                 <template #cell-cash="{ value }">{{ value === 0 ? "" : value }}</template>
                 <template #cell-card="{ value }">{{ value === 0 ? "" : value }}</template>
                 <template #cell-type="{ value }">{{ typeLabel("expense", value) }}</template>
+                <template #footer-check><i class="icon-trashcan" title="Remove selected data" style="cursor: pointer" @click="deleteChecked('expense')"></i></template>
+                <template #footer-memo><strong>Total</strong></template>
+                <template #footer-cash><strong>{{ expenseTotal.cash }}</strong></template>
+                <template #footer-card><strong>{{ expenseTotal.card }}</strong></template>
             </DataGrid>
-            <table class="table simple small headline footer">
-                <thead>
-                    <tr>
-                        <th width="28"><i class="icon-trashcan" title="Remove selected data" style="cursor: pointer" @click="deleteChecked('expense')"></i></th>
-                        <th width="190"></th>
-                        <th width="40%">Total</th>
-                        <th>{{ expenseTotal.cash }}</th>
-                        <th>{{ expenseTotal.card }}</th>
-                        <th width="190"></th>
-                    </tr>
-                </thead>
-            </table>
         </div>
 
         <div v-show="activeTab === 1">
@@ -333,19 +325,11 @@ function onCalendarDayClick(no: number) {
                 <template #cell-cash="{ value }">{{ value === 0 ? "" : value }}</template>
                 <template #cell-card="{ value }">{{ value === 0 ? "" : value }}</template>
                 <template #cell-type="{ value }">{{ typeLabel("income", value) }}</template>
+                <template #footer-check><i class="icon-trashcan" title="Remove selected data" style="cursor: pointer" @click="deleteChecked('income')"></i></template>
+                <template #footer-memo><strong>Total</strong></template>
+                <template #footer-cash><strong>{{ incomeTotal.cash }}</strong></template>
+                <template #footer-card><strong>{{ incomeTotal.card }}</strong></template>
             </DataGrid>
-            <table class="table simple small headline footer">
-                <thead>
-                    <tr>
-                        <th width="28"><i class="icon-trashcan" title="Remove selected data" style="cursor: pointer" @click="deleteChecked('income')"></i></th>
-                        <th width="190"></th>
-                        <th width="40%">Total</th>
-                        <th>{{ incomeTotal.cash }}</th>
-                        <th>{{ incomeTotal.card }}</th>
-                        <th width="190"></th>
-                    </tr>
-                </thead>
-            </table>
         </div>
 
         <div v-show="activeTab === 2">

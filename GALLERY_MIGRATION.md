@@ -64,10 +64,16 @@ demo), so these are being converted one at a time rather than in bulk.
         closed) the row before the picker's selection ever landed. Fixed by
         only committing explicitly once the picker actually makes a
         selection, not on blur.
-      Known minor cosmetic gap (not fixed, documented instead): the Total
-      row below each grid is a separate plain `<table>` (DataGrid has no
-      footer-row slot) and its Cash/Card columns don't line up pixel-
-      perfectly with the DataGrid's own auto-distributed column widths.
+      Follow-up fix (commit `PENDING`): the Total row's Cash/Card columns
+      didn't line up with the grid's own (a separate plain `<table>` can't
+      guarantee matching widths against a column with no explicit `width`).
+      Fixed properly by adding a real `footer-<key>`-slot-based `<tfoot>` to
+      jui-grid-vue's `DataGrid.vue` itself (separate repo, commit
+      `714283e`) - sharing the SAME `<table>`/`<colgroup>` guarantees
+      pixel-perfect alignment, styled like the header row (matching the
+      legacy grid.table's own "Total" row, which reused a second `<thead>`
+      for the exact same reason) and sticky-pinned to the scroll
+      container's bottom edge.
 - [ ] admintool
 - [ ] apmmarket
 - [ ] gps
