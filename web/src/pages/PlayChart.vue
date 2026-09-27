@@ -376,26 +376,35 @@ function cancelColorsWindow() {
 }
 
 // --- Export/Import theme ---------------------------------------------------
-// The legacy versions (chart.js's exportTheme/importTheme, both on `main`)
-// round-tripped through a `jui.redefine("chart.theme.custom", [], function ()
-// { return {...} })` JS snippet (the old jui.js v1 theme-registration format)
-// and a server-side `export.php` form-POST for the actual file download -
-// neither applies to this new architecture: jui-chart-vue's `Builder.setTheme()`
-// takes a plain object directly (no `jui.redefine` registry at all), and this
-// is a static SPA with no backend to POST a download through. Re-done here as
-// a plain JSON file + a client-side Blob download - functionally equivalent
-// (still a portable, re-importable snapshot of the current theme), just in a
-// format that actually fits the new engine/deployment.
-function exportTextFile(name: string, text: string, type = "application/json") {
-    const blob = new Blob([text], { type })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = name
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
+// The legacy version (chart.js's exportTheme/importTheme, on `main`) round-tripped
+// through a `jui.redefine("chart.theme.custom", [], function () { return {...} })`
+// JS snippet (the old jui.js v1 theme-registration format) - that part doesn't apply
+// here, since jui-chart-vue's `Builder.setTheme()` takes a plain object directly (no
+// `jui.redefine` registry at all). The actual file download, though, reuses the same
+// mechanism as the legacy chart.js and this SPA's own play/chart/chart.js pilot: a
+// hidden form POSTed to jui-app-server's /export (see chart.js's exportTextFile) -
+// this is a static SPA with no backend of its own, so the force-download response
+// (Content-Disposition: attachment) has to come from that standalone service instead.
+function exportTextFile(name: string, text: string) {
+    const form = document.createElement("form")
+    form.action = "https://feisty-rigging-490112-v2.appspot.com/export"
+    form.method = "POST"
+    form.target = "_blank"
+
+    const filenameInput = document.createElement("input")
+    filenameInput.type = "hidden"
+    filenameInput.name = "filename"
+    filenameInput.value = name
+
+    const filetextInput = document.createElement("input")
+    filetextInput.type = "hidden"
+    filetextInput.name = "filetext"
+    filetextInput.value = text
+
+    form.append(filenameInput, filetextInput)
+    document.body.appendChild(form)
+    form.submit()
+    form.remove()
 }
 
 function exportTheme() {
@@ -661,7 +670,7 @@ function exportCsv() {
     const chart = getCurrentBuilder()
     if (!chart) return
     const csv = dataToCsv(chart.get("axis", 0)?.data)
-    exportTextFile(`${code.value.split(".").join("_")}.csv`, csv, "text/csv")
+    exportTextFile(`${code.value.split(".").join("_")}.csv`, csv)
 }
 
 function importCsv(e: Event) {
