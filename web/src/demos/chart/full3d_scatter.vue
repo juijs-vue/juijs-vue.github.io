@@ -1,0 +1,63 @@
+<script setup lang="ts">
+// @ts-nocheck
+import { ref } from "vue"
+import { Chart } from "jui-chart-vue"
+
+const padding = 100
+const axis = {
+         x : {
+             type : "block",
+             domain : [ "Q1", "Q2", "Q3", "Q4" ],
+             line : true,
+             orient : "bottom"
+         },
+         y : {
+             type : "range",
+             domain : "total",
+             step : 5,
+             line : true,
+             orient : "left"
+         },
+         z : {
+             type : "range",
+             domain : [ 0, 100 ],
+             line: true,
+             step : 4,
+    key : "value"
+         },
+         data : [
+             { sales: 0, profit: 15, total: 20, value: 80 },
+             { sales: 15, profit: 6, total: 20, value: 50 },
+             { sales: 8, profit: 10, total: 20, value: 60 },
+             { sales: 18, profit: 5, total: 20, value: 15 }
+         ],
+         depth: 300,
+         degree: {
+             x: 10,
+             y: 45,
+             z: 0
+         },
+         perspective: 0.9
+     }
+const brush = {
+        type: "polygon.scatter3d",
+        target : [ "sales", "profit", "total" ],
+        size : 10
+    }
+const widget = [{
+        type : "polygon.rotate3d"
+    }, {
+        type : "tooltip"
+    }]
+const style = {
+        gridXAxisBorderWidth: 1,
+        gridYAxisBorderWidth: 1,
+        gridZAxisBorderWidth: 1
+    }
+
+const chartRef = ref(null)
+</script>
+
+<template>
+<Chart ref="chartRef" :padding="padding" :axis="axis" :brush="brush" :widget="widget" :style="style" />
+</template>
