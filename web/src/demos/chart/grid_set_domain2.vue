@@ -1,0 +1,36 @@
+<script setup lang="ts">
+// @ts-nocheck
+import { ref } from "vue"
+import { Chart } from "jui-chart-vue"
+
+const axis = [{
+        x : {
+            type : "block",
+            domain : "year"
+        },
+        y : {
+            type : "range",
+            domain : "value",
+            step : 5
+        },
+        data : [
+            { year : "2012", value : 50 },
+            { year : "2013", value : 60 },
+            { year : "2014", value : 70 },
+            { year : "2015", value : 80 },
+            { year : "2016", value : 90 },
+            { year : "2017", value : 100 }
+        ]
+    }]
+const brush = [{
+        type : "column",
+        outerPadding : 20,
+        target : "value"
+    }]
+
+const chartRef = ref(null)
+</script>
+
+<template>
+<Chart ref="chartRef" :axis="axis" :brush="brush" />
+</template>
