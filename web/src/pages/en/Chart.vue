@@ -17,7 +17,7 @@ useLegacyScript("/jui-ui-vue/res/chart.js")
                             JUI Chart provides a variety of brushes, axis and widgets.<br />
                             You can represent data in conjunction with the table component.
                         </div>
-                        <div class="img img-play" onclick="window.open('http://chartplay.jui.io', 'jui.chartplay');"></div>
+                        <div class="img img-play" onclick="window.open('/jui-ui-vue/play/chart/', 'jui.chartplay');"></div>
                     </div>
                 </div>
             </nav>
