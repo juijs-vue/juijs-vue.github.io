@@ -20,10 +20,9 @@ instead of being rewritten.
 import json
 import os
 
-from flask import Flask, abort, request, send_file, send_from_directory, session
+from flask import Flask, abort, request, send_from_directory, session
 from flask import render_template as _render_template
 from jinja2 import ChoiceLoader, FileSystemLoader
-from io import BytesIO
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -180,8 +179,14 @@ def load_menu(menu_json_path, page_code):
 
 
 # --------------------------------------------------------------------------
-# Play: Chart (was play/chart/index.php, metadata.php, export.php)
+# Play: Chart (was play/chart/index.php, metadata.php)
 # --------------------------------------------------------------------------
+#
+# export.php's force-download behavior is no longer reimplemented here -
+# play/chart/chart.js's exportTextFile() now POSTs straight to jui-app-server
+# (https://feisty-rigging-490112-v2.appspot.com/export), the same
+# standalone Flask service that already serves this repo's menu.json/
+# facebookgroup data copies, instead of a locally duplicated route.
 
 CHART_DIR = "play/chart"
 
@@ -197,14 +202,6 @@ def play_chart_index():
         "play/chart/index.html",
         group=group, data=data, data_index=data_index, csv=csv, code_content=code_content,
     )
-
-
-@app.route("/play/chart/export.php", methods=["POST"])
-def play_chart_export():
-    filename = request.form.get("filename", "download.txt")
-    filetext = request.form.get("filetext", "")
-    buf = BytesIO(filetext.encode("utf-8"))
-    return send_file(buf, mimetype="application/octet-stream", as_attachment=True, download_name=filename)
 
 
 # play/ui (was play/ui/index.php, metadata.php, loader.php) has been fully

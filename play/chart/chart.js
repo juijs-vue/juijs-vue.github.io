@@ -378,7 +378,7 @@ function getCsvToObject(csv) {
 }
 
 function exportTextFile(name, text) {
-    var $form = $("<form action='export.php' method='POST' target='_blank'></form>"),
+    var $form = $("<form action='https://feisty-rigging-490112-v2.appspot.com/export' method='POST' target='_blank'></form>"),
         $name = $("<input type='hidden' name='filename'/>"),
         $text = $("<input type='hidden' name='filetext'/>");
 
