@@ -37,7 +37,7 @@ demo), so these are being converted one at a time rather than in bulk.
       index.html side by side before deleting it) - a genuine data/lookup
       bug in the original, left as-is.
 - [x] `accountbook` -> `web/src/pages/gallery/AccountBook.vue` (commit
-      `PENDING`) - by far the most stateful demo so far: editable Expense/
+      `353e9d4`) - by far the most stateful demo so far: editable Expense/
       Income `<DataGrid>`s (with a floating `<Datepicker>`/`<Dropdown>` for
       the date/type edit cells, matching the legacy's own shared floating-
       widget pattern), a reactive column chart, checkbox multi-delete, a
