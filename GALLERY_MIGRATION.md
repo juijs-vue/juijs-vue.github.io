@@ -36,7 +36,38 @@ demo), so these are being converted one at a time rather than in bulk.
       "MALE" as both labels (verified by rendering the old gallery/fitness/
       index.html side by side before deleting it) - a genuine data/lookup
       bug in the original, left as-is.
-- [ ] accountbook
+- [x] `accountbook` -> `web/src/pages/gallery/AccountBook.vue` (commit
+      `PENDING`) - by far the most stateful demo so far: editable Expense/
+      Income `<DataGrid>`s (with a floating `<Datepicker>`/`<Dropdown>` for
+      the date/type edit cells, matching the legacy's own shared floating-
+      widget pattern), a reactive column chart, checkbox multi-delete, a
+      month `<Slider>`, and a Summary tab using `<Datepicker variant="calendar">`
+      (NOT a separate Calendar component - jui-ui-vue doesn't have one, but
+      also doesn't need one: `variant="calendar"` is the exact same
+      Datepicker skinned differently, confirmed by reading its own source)
+      with per-day task badges + a `<Window>` modal showing that day's
+      breakdown in two more `<DataGrid>`s under a pill `<Tab>`.
+      Two real, non-trivial bugs found and fixed:
+      - **jui-grid-vue's `DataGrid.vue` itself** (separate repo, separate
+        commit `234e734`): its editable-row commit was unconditional (any
+        field's blur/Enter closes edit mode immediately), but the legacy
+        grid.table this demo is built on (confirmed by reading grid.min.js
+        directly) lets its `editend` handler REJECT an incomplete row and
+        keep editing open - this demo's whole "date, then memo, then cash,
+        then type, THEN commit" flow depends on that. Added an opt-in
+        `editValidate` prop that can return `false` to reject-and-stay-open,
+        purely additive (every other consumer's behavior is unchanged).
+      - This demo's own floating date/type edit-cell inputs were originally
+        wired to commit on their own `blur` (matching the OTHER, plain
+        default-slot columns' convention) - but focus moving to the floating
+        picker itself is a blur too, which committed (and, pre-editValidate,
+        closed) the row before the picker's selection ever landed. Fixed by
+        only committing explicitly once the picker actually makes a
+        selection, not on blur.
+      Known minor cosmetic gap (not fixed, documented instead): the Total
+      row below each grid is a separate plain `<table>` (DataGrid has no
+      footer-row slot) and its Cash/Card columns don't line up pixel-
+      perfectly with the DataGrid's own auto-distributed column widths.
 - [ ] admintool
 - [ ] apmmarket
 - [ ] gps

@@ -23,7 +23,8 @@ useTitle(computed(() => (item.value ? `JUI Vue: ${item.value.info.title}` : "JUI
 const NATIVE_DEMOS: Record<string, string> = {
     facebookgroup: "FacebookGroup",
     koreaweather: "KoreaWeather",
-    fitness: "Fitness"
+    fitness: "Fitness",
+    accountbook: "AccountBook"
 }
 
 const nativeDemos = import.meta.glob("./gallery/*.vue")
