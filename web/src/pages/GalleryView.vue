@@ -21,7 +21,8 @@ useTitle(computed(() => (item.value ? `JUI Vue: ${item.value.info.title}` : "JUI
 // most of these gallery ids are single concatenated words with no delimiter to recover a word
 // boundary from ("facebookgroup" -> "FacebookGroup" is unrecoverable by any generic string rule).
 const NATIVE_DEMOS: Record<string, string> = {
-    facebookgroup: "FacebookGroup"
+    facebookgroup: "FacebookGroup",
+    koreaweather: "KoreaWeather"
 }
 
 const nativeDemos = import.meta.glob("./gallery/*.vue")

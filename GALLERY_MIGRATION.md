@@ -13,12 +13,22 @@ demo), so these are being converted one at a time rather than in bulk.
 - [x] `facebookgroup` -> `web/src/pages/gallery/FacebookGroup.vue` (commit
       `c07b2e9`) - full worked example, read this commit before starting the
       next one.
+- [x] `koreaweather` -> `web/src/pages/gallery/KoreaWeather.vue` (commit
+      `PENDING`) - map.weather brush card layout + realtime (1s interval)
+      air-quality line + 3-day forecast table + province combo. Two real
+      bugs caught and fixed along the way (neither specific to this demo):
+      `jui-chart-vue`'s `package.json` had no `main`/`module`/`exports` at
+      all (separate repo, separate commit) - broke the ENTIRE `web`
+      production build (`jui-chart-vue?url` unresolved), not just this
+      demo; and the province `<Combo>` needs an actual `v-model` bound back
+      to itself (even though nothing downstream consumes the selection,
+      matching the legacy demo exactly) or its own button label never
+      updates after picking an item.
 - [ ] accountbook
 - [ ] admintool
 - [ ] apmmarket
 - [ ] fitness
 - [ ] gps
-- [ ] koreaweather
 - [ ] messi-vs-ronaldo
 - [ ] realtime
 - [ ] stockinfo
