@@ -46,13 +46,13 @@ nav {
 
 .main > nav:nth-child(1) {
 	background-color: #64548d !important;
-	background-image: url("/jui-ui-vue/res/img/headline.png") !important;
+	background-image: url("/res/img/headline.png") !important;
 	background-repeat: no-repeat !important;
 }
 
 .main > nav:nth-child(2) {
 	background-color: #dbe1ee !important;
-	background-image: url("/jui-ui-vue/res/img/headline2.png") !important;
+	background-image: url("/res/img/headline2.png") !important;
 	background-repeat: no-repeat !important;
 	display: none;
 }
@@ -60,7 +60,7 @@ nav {
 /*
 .main > nav:nth-child(3) {
 	background-color: #040d14 !important;
-	background-image: url("/jui-ui-vue/res/img/headline3.png") !important;
+	background-image: url("/res/img/headline3.png") !important;
 	background-repeat: repeat-x !important;
 	display: none;
 }
@@ -68,7 +68,7 @@ nav {
 
 .main > nav:nth-child(3) {
 	background-color: #cfcfcf !important;
-	background-image: url("/jui-ui-vue/res/img/headline4.png") !important;
+	background-image: url("/res/img/headline4.png") !important;
 	background-repeat: repeat-x !important;
 	display: none;
 }
@@ -152,7 +152,7 @@ nav {
 }
 .main-chart-1 > nav {
     background-color: #2b3340 !important;
-    background-image: url("/jui-ui-vue/res/img/chart_main_1.png") !important;
+    background-image: url("/res/img/chart_main_1.png") !important;
     background-repeat: no-repeat !important;
     background-size: cover;
     -webkit-background-size: cover;
@@ -197,7 +197,7 @@ nav {
     background-color: #d0dfe2 !important;
 }
 .main-chart-2 > nav > .center {
-    background-image: url("/jui-ui-vue/res/img/chart_main_2.png") !important;
+    background-image: url("/res/img/chart_main_2.png") !important;
     background-repeat: no-repeat !important;
     height: 100% !important;
 }
@@ -237,7 +237,7 @@ nav {
     height : 900px;
 }
 .main-chart-4 > nav {
-    background: url("/jui-ui-vue/res/img/ripped-border.png") repeat-x left top, url("/jui-ui-vue/res/img/light-noise.png") repeat !important;
+    background: url("/res/img/ripped-border.png") repeat-x left top, url("/res/img/light-noise.png") repeat !important;
 }
 .main-chart-4 > nav > .center > .img-logo {
     background-position: 0 -1041px;
@@ -264,7 +264,7 @@ nav {
     background: #d0dfe2;
 }
 .main-chart-5 > nav {
-    background: url("/jui-ui-vue/res/img/chart_main_3.png") no-repeat !important;
+    background: url("/res/img/chart_main_3.png") no-repeat !important;
     background-position: center !important;
 }
 .main-chart-5 > nav > .center > .box {
@@ -617,7 +617,7 @@ footer .line {
 
 .center .logo {
 	position: absolute;
-	background-image: url('/jui-ui-vue/res/img/logo.png');
+	background-image: url('/res/img/logo.png');
 	background-repeat: no-repeat;
 	width: 58px;
 	height: 32px;
@@ -670,7 +670,7 @@ footer .line {
 
 .img {
 	display: inline-block;
-	background-image: url("/jui-ui-vue/res/img/home.png");
+	background-image: url("/res/img/home.png");
 	background-repeat: no-repeat;
 }
 
@@ -777,7 +777,7 @@ footer .line {
 }
 
 .home .img {
-	background-image: url("/jui-ui-vue/res/img/home.png");
+	background-image: url("/res/img/home.png");
 	background-repeat: no-repeat;
 	display: inline-block;
 }

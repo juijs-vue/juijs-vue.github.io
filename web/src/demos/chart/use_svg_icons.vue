@@ -16,7 +16,7 @@ var names = {
 const padding = 150
 // jui-chart-vue's own default icon font path is an absolute `/lib/jui-chart-vue/...` URL baked in
 // at ITS OWN build time (for the original Flask deployment) - wrong for this SPA's own
-// `/jui-ui-vue/` base, so every demo that actually renders an icon glyph (this one does, via
+// `/` base, so every demo that actually renders an icon glyph (this one does, via
 // `this.icon("label")`/the legend's `icon: "{chart}"`) passes its own relative path instead. See
 // `web/scripts/copy-legacy-static.mjs`'s matching font-copy entry.
 const icon = {

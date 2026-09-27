@@ -3,7 +3,7 @@ import { useTitle } from "../../composables/useTitle"
 import { useLegacyScript } from "../../composables/useLegacyScript"
 
 useTitle("JUI Framework: Charts")
-useLegacyScript("/jui-ui-vue/res/chart.js")
+useLegacyScript("/res/chart.js")
 </script>
 
 <template>
@@ -17,7 +17,7 @@ useLegacyScript("/jui-ui-vue/res/chart.js")
                             JUI 차트는 다양한 브러쉬와 그리드, 위젯을 제공하며 이를 조합하여 간단하고 쉽게 차트를 사용할 수 있으며<br />
                             테이블 컴포넌트와 연동하여 데이터를 표현할 수도 있습니다.
                         </div>
-                        <div class="img img-play" onclick="window.open('/jui-ui-vue/play/chart/', 'jui.chartplay');"></div>
+                        <div class="img img-play" onclick="window.open('/play/chart/', 'jui.chartplay');"></div>
                     </div>
                 </div>
             </nav>

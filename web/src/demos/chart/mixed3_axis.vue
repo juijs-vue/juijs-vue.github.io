@@ -5,7 +5,7 @@ import { Chart } from "jui-chart-vue"
 
 // jui-chart-vue's own default icon font path is an absolute `/lib/jui-chart-vue/...` URL baked in
 // at ITS OWN build time (for the original Flask deployment) - wrong for this SPA's own
-// `/jui-ui-vue/` base (real 404s otherwise). See `web/scripts/copy-legacy-static.mjs`'s matching
+// `/` base (real 404s otherwise). See `web/scripts/copy-legacy-static.mjs`'s matching
 // font-copy entry.
 const icon = {
     type: "classic",

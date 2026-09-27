@@ -3,7 +3,7 @@ import { useTitle } from "../../composables/useTitle"
 import { useLegacyScript } from "../../composables/useLegacyScript"
 
 useTitle("JUI Framework: Charts")
-useLegacyScript("/jui-ui-vue/res/chart.js")
+useLegacyScript("/res/chart.js")
 </script>
 
 <template>
@@ -17,7 +17,7 @@ useLegacyScript("/jui-ui-vue/res/chart.js")
                             JUI Chart provides a variety of brushes, axis and widgets.<br />
                             You can represent data in conjunction with the table component.
                         </div>
-                        <div class="img img-play" onclick="window.open('/jui-ui-vue/play/chart/', 'jui.chartplay');"></div>
+                        <div class="img img-play" onclick="window.open('/play/chart/', 'jui.chartplay');"></div>
                     </div>
                 </div>
             </nav>
