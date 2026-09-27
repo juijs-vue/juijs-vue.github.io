@@ -181,7 +181,42 @@ demo), so these are being converted one at a time rather than in bulk.
       via a mechanical `var data =` -> `export default` transform (not
       hand-retyped) into `web/src/pages/gallery/messi/data.ts`, to avoid
       transcription errors.
-- [ ] realtime
+- [x] `realtime` -> `web/src/pages/gallery/RealTime.vue` (commit
+      `f8f61ec`) - a 4-panel realtime monitoring dashboard: 5-axis
+      "dashboard_top" (active service equalizercolumn + response time/TPS
+      lines + today's TPS/concurrent-users split areas with a moving
+      "pin" marker), 3-axis CANVAS-mode "dashboard_bottom" (hourly call
+      count/visitor bars + a canvas.scatter "transaction view" with
+      drag-select), a world-map bubble chart, and a 3-cell fullgauge
+      "visitor type" chart - each on its own setInterval loop via
+      `getBuilder()`/`axis()`/`updateBrush()`. `render: false` on every
+      `<Chart>` matches the legacy `render: false` builder option: all 4
+      panels are blank for the first 1-3s after mount, faithfully, until
+      each one's own first interval tick calls `.render()`.
+
+      Two real jui-chart-vue bugs/gaps found and fixed (separate repo,
+      both already pushed):
+      - `chart.widget.canvas.dragselect` didn't exist (only the plain SVG
+        "dragselect" did) - a canvas-mode chart stacks its `<canvas>`
+        elements ON TOP of the SVG layer (confirmed from both the real
+        legacy engine and this project's own `Builder.init()`: the SVG
+        root is created first, `<canvas>` elements appended after), so
+        the SVG widget's rubber-band rect would render invisibly
+        underneath it. Ported the canvas variant (extends the existing
+        `DragSelectWidget`, only overriding the actual drawing to use
+        `this.canvas`'s `fillRect`/`strokeRect`/`clearRect`) - verified
+        via a real Playwright mouse drag: the translucent selection
+        rectangle renders correctly over the Transaction View scatter.
+      - `SplitAreaBrush.drawArea()` crashed (a malformed `<path
+        d="...Mundefined,undefined...">`, a real if purely cosmetic
+        console error) when its axis had zero data - exactly this demo's
+        situation for "Today's TPS"/"Today's Concurrent Users" (a
+        realtime chart renders once at mount, before its first interval
+        tick ever populates them). Fixed to skip a target with no data
+        yet, matching every other data-driven brush's existing behavior.
+
+      Verified zero console errors/NaN transforms on this demo AND on a
+      full regression sweep of every previously-completed gallery demo.
 - [ ] stockinfo
 - [ ] svgpen
 
