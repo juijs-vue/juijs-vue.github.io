@@ -82,7 +82,7 @@ onBeforeUnmount(() => {
                         It offers bootstrap support, style &amp; script components and SVG-based chart components.<br />
                         All components are free, including JUI Chart.
                     </div>
-                    <a href="https://github.com/juijs/" target="_blank"><div class="img img-download-main"></div></a>
+                    <a href="https://github.com/juijs-vue/" target="_blank"><div class="img img-download-main"></div></a>
                 </div>
             </div>
             <div class="center" v-else-if="i === 1">

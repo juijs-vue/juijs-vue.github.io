@@ -72,7 +72,7 @@ onMounted(() => {
             </div>
             <div class="col col-4 link">
                 <span @click="goAbout">ABOUT US</span> |
-                <span @click="openExternal('https://github.com/juijs/')">GitHub</span> |
+                <span @click="openExternal('https://github.com/juijs-vue/')">GitHub</span> |
                 <span @click="openExternal('http://blog.jui.io')">Blog</span> |
                 <span @click="openExternal('http://store.jui.io')">Store</span> |
                 <span @click="openExternal('https://www.facebook.com/groups/815675585191885/')">Facebook</span>

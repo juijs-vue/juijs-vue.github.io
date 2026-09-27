@@ -46,7 +46,7 @@ useSwipeClose(menuWindowEl, () => {
             </span>
 
             <span class="menu menu-right">
-                <a href="https://github.com/juijs/" target="_blank"><div class="img img-download1"></div></a>&nbsp;
+                <a href="https://github.com/juijs-vue/" target="_blank"><div class="img img-download1"></div></a>&nbsp;
                 <slot name="download-button" />
             </span>
 
