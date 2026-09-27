@@ -14,7 +14,7 @@ demo), so these are being converted one at a time rather than in bulk.
       `c07b2e9`) - full worked example, read this commit before starting the
       next one.
 - [x] `koreaweather` -> `web/src/pages/gallery/KoreaWeather.vue` (commit
-      `PENDING`) - map.weather brush card layout + realtime (1s interval)
+      `ef71983`) - map.weather brush card layout + realtime (1s interval)
       air-quality line + 3-day forecast table + province combo. Two real
       bugs caught and fixed along the way (neither specific to this demo):
       `jui-chart-vue`'s `package.json` had no `main`/`module`/`exports` at
