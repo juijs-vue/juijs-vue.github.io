@@ -30,7 +30,7 @@ useTitle("JUI Vue: A Vue 3 UI framework with rich components, SVG charts and a f
                                 <div class="img img-col-2-msg"></div>
                             </div>
                             <p>
-                                스타일과 인터랙션을 모두 아우르는 다양한 UI 컴포넌트를<br />
+                                다양한 인터페이스 요구를 아우르는 25종의 UI 컴포넌트를<br />
                                 제공합니다. 라이브러리가 발전함에 따라 새로운 컴포넌트도<br />
                                 계속 추가되고 있습니다.
                             </p>
@@ -57,9 +57,9 @@ useTitle("JUI Vue: A Vue 3 UI framework with rich components, SVG charts and a f
                                 <div class="img img-col-6-msg"></div>
                             </div>
                             <p>
-                                차트의 배경이 되는 다양한 그리드와 데이터를 표현할<br />
-                                수 있는 여러 브러쉬 그리고 인터랙션을 담당하는 <br />
-                                위젯들을 제공합니다. 또한 다양한 스타일의 차트에 적용할 수 있는 테마를 지원합니다.
+                                차트의 배경이 되는 12종의 그리드와 데이터를 표현할<br />
+                                수 있는 84종의 브러쉬 그리고 인터랙션을 담당하는 <br />
+                                18종의 위젯을 제공합니다. 또한 다양한 스타일의 차트에 적용할 수 있는 테마를 지원합니다.
                             </p>
                         </div>
                         <div class="col col-4">

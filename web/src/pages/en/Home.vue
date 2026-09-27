@@ -29,8 +29,8 @@ useTitle("JUI Vue: A Vue 3 UI framework with rich components, SVG charts and a f
                                 <div class="img img-col-2-msg"></div>
                             </div>
                             <p>
-                                It provides a rich set of UI components covering both styling and interactive
-                                behavior. More components continue to be added as the library evolves.
+                                It provides 25 UI components covering a wide range of interface needs. More
+                                components continue to be added as the library evolves.
                             </p>
                         </div>
                         <div class="col col-4">
@@ -53,9 +53,8 @@ useTitle("JUI Vue: A Vue 3 UI framework with rich components, SVG charts and a f
                                 <div class="img img-col-6-msg"></div>
                             </div>
                             <p>
-                                It provides a wide range of grids for chart backgrounds, brushes to represent your
-                                data and widgets for interactivity. Themes can also be applied to customize the look
-                                of your charts.
+                                It provides 12 grids for the background of charts, 84 brushes and 18 widgets
+                                associated with interactivity. Moreover, themes can be applied to customize your charts.
                             </p>
                         </div>
                         <div class="col col-4">
