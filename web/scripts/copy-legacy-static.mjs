@@ -15,7 +15,20 @@ const ENTRIES = [
     { from: "gallery", to: "gallery" },
     { from: "play/chart", to: "play/chart" },
     { from: "res/chart.js", to: "res/chart.js" },
-    { from: "res/img", to: "res/img" }
+    { from: "res/img", to: "res/img" },
+    // jui-chart-vue's own icon font (public/fonts/icomoon.*) - jui-chart-vue.Chart.vue's default
+    // `icon.path` bakes in ITS OWN build-time Vite `base` (vite.lib.config.ts's
+    // `base: '/lib/jui-chart-vue/'`, needed for the original Flask deployment, which serves this
+    // package's dist-lib output at exactly that path) - so requesting the font from ANY other
+    // consumer (like this SPA, served under a different `/jui-ui-vue/` base) always 404s unless
+    // the exact same `/lib/jui-chart-vue/fonts/...` path also exists here. Every chart demo that
+    // renders a real icon glyph passes an explicit `icon` prop with a relative
+    // `../../lib/jui-chart-vue/fonts/...` path instead of relying on that broken default (see e.g.
+    // `web/src/demos/chart/use_svg_icons.vue`) - this entry is what makes that relative path (and,
+    // for any demo that doesn't override `icon`, the still-broken absolute default - unavoidable
+    // without changing jui-chart-vue's own build, out of scope here) resolve to a real font file
+    // instead of a 404.
+    { from: "../jui-chart-vue/public/fonts", to: "lib/jui-chart-vue/fonts" }
 ]
 
 for (const { from, to } of ENTRIES) {

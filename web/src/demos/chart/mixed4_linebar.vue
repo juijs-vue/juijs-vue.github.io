@@ -3,6 +3,20 @@
 import { ref } from "vue"
 import { Chart } from "jui-chart-vue"
 
+// jui-chart-vue's own default icon font path is an absolute `/lib/jui-chart-vue/...` URL baked in
+// at ITS OWN build time (for the original Flask deployment) - wrong for this SPA's own
+// `/jui-ui-vue/` base (real 404s otherwise). See `web/scripts/copy-legacy-static.mjs`'s matching
+// font-copy entry.
+const icon = {
+    type: "classic",
+    path: [
+        "../../lib/jui-chart-vue/fonts/icomoon.eot",
+        "../../lib/jui-chart-vue/fonts/icomoon.woff",
+        "../../lib/jui-chart-vue/fonts/icomoon.ttf",
+        "../../lib/jui-chart-vue/fonts/icomoon.svg"
+    ]
+}
+
 var columnData = [],
     lineData = [];
 
@@ -91,5 +105,5 @@ const chartRef = ref(null)
 </script>
 
 <template>
-<Chart ref="chartRef" :axis="axis" :brush="brush" />
+<Chart ref="chartRef" :icon="icon" :axis="axis" :brush="brush" />
 </template>

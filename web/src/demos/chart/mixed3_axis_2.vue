@@ -3,6 +3,20 @@
 import { ref } from "vue"
 import { Chart } from "jui-chart-vue"
 
+// jui-chart-vue's own default icon font path is an absolute `/lib/jui-chart-vue/...` URL baked in
+// at ITS OWN build time (for the original Flask deployment) - wrong for this SPA's own
+// `/jui-ui-vue/` base (real 404s otherwise). See `web/scripts/copy-legacy-static.mjs`'s matching
+// font-copy entry.
+const icon = {
+    type: "classic",
+    path: [
+        "../../lib/jui-chart-vue/fonts/icomoon.eot",
+        "../../lib/jui-chart-vue/fonts/icomoon.woff",
+        "../../lib/jui-chart-vue/fonts/icomoon.ttf",
+        "../../lib/jui-chart-vue/fonts/icomoon.svg"
+    ]
+}
+
 // `jui.include("util.time")`(레거시 유틸)는 새 아키텍처의 샌드박스 import map에
 // "vue"/"jui-chart-vue"만 있고 이 유틸은 없어 그대로 재사용할 수 없다 - jui-graph-ts의
 // util/time.ts와 동일한 알고리즘을 데모 안에 그대로 인라인한다.
@@ -252,5 +266,5 @@ const chartRef = ref(null)
 </script>
 
 <template>
-<Chart ref="chartRef" :axis="axis" :brush="brush" :widget="widget" :style="style" />
+<Chart ref="chartRef" :icon="icon" :axis="axis" :brush="brush" :widget="widget" :style="style" />
 </template>
