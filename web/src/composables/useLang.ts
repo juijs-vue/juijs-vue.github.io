@@ -11,7 +11,18 @@ export type Lang = "en" | "ko"
 // on every visit to the chart page, exactly like today.
 export function useLang() {
     const route = useRoute()
-    const lang = computed<Lang>(() => (route.query.lang === "ko" ? "ko" : "en"))
+    const lang = computed<Lang>(() => {
+        // An explicit `?lang=` always wins (this is also how a page reload after
+        // clicking the language toggle keeps its chosen language across
+        // in-site navigation - see AppNav.vue's `pageHref()`, which forwards the
+        // current `lang` onto every link it renders).
+        if (route.query.lang === "ko") return "ko"
+        if (route.query.lang === "en") return "en"
+        // No explicit choice yet: default to the visitor's own browser language
+        // (Korean -> ko, anything else -> en, matching this site's only two
+        // supported languages).
+        return navigator.language.toLowerCase().startsWith("ko") ? "ko" : "en"
+    })
 
     function changeLanguage(next: Lang) {
         const page = route.query.p
