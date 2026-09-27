@@ -129,7 +129,47 @@ demo), so these are being converted one at a time rather than in bulk.
         path). Added a defensive guard: skip the update entirely when the
         computed height isn't positive, rather than ever applying a
         nonsensical size.
-- [ ] gps
+- [x] `gps` -> `web/src/pages/gallery/GPS.vue` (commit `PENDING`) - a
+      full-screen "GPS radar" dashboard: a world-map radar sweep
+      (map.flightroute brush + a custom rotating-sweep widget + a
+      map.minimap overview), a compass gauge (custom widget), real-time
+      wind/TPS/flight-status mini-charts, and a continuously-rotating 3D
+      F16 model (canvas.model3d). The two custom widgets ("radar"/
+      "compass") are demo-specific low-level SVG code (`this.svg.g/path/
+      circle/linearGradient` etc.) ported faithfully into
+      `web/src/pages/gallery/gps/{radarWidget,compassWidget}.ts` and
+      registered as a LOCAL widget (per explicit decision: not contributed
+      to jui-chart-vue's own shared registry, since these are specific to
+      this one demo, not broadly reusable chart primitives). moment.js
+      (3687 lines, only ever used for one `"LL"`-format date string) was
+      not ported/vendored - replaced with the equivalent native
+      `Intl.DateTimeFormat` call, same visible output, no legacy dependency.
+      Required jui-chart-vue itself to re-export `CoreWidget`/
+      `registerWidget`/`registerBrush`/`registerTheme`/`mathUtil`/
+      `colorUtil` from `jui-graph-ts` (separate repo, no new commit needed
+      beyond the index.ts change since it ships with jui-chart-vue's own
+      build) - `jui-graph-ts` is bundled directly INTO jui-chart-vue's own
+      dist-lib (not marked `external`), so a consumer separately depending
+      on `jui-graph-ts` on its own would get a SECOND, independent copy
+      with its own separate `registerWidget` registry - anything registered
+      there would be invisible to `<Chart>`. Re-exporting from jui-chart-vue
+      itself guarantees the same module instance, and thus the same registry.
+
+      One real, significant bug found and fixed in `jui-graph-ts` itself
+      (commit `56733b2`, separate repo): `SVG.toDataURI()` (used by the
+      map.minimap widget to embed a scaled-down snapshot of the main map as
+      an `<image>`) only ran `encodeURIComponent` on the serialized XML for
+      `browser.mozilla`/`browser.msie` - never for Chrome/Chromium/Safari
+      (the large majority of real usage today). Any SVG using
+      `url(#someId)` (any gradient/clipPath reference - i.e. nearly every
+      real chart) contains an unescaped `#`, which a data URI reads as its
+      fragment delimiter, silently truncating everything after it - the
+      resulting corrupt SVG payload fails to render at all (a plainly
+      visible "broken image" glyph, reproduced and confirmed via a real
+      Chromium render of this exact demo - the first thing in this whole
+      project to ever call `toDataURI()` with real content through
+      Playwright). Fixed to always `encodeURIComponent` - safe in every
+      browser, so there was no real browser-specific behavior worth keeping.
 - [ ] messi-vs-ronaldo
 - [ ] realtime
 - [ ] stockinfo

@@ -26,7 +26,8 @@ const NATIVE_DEMOS: Record<string, string> = {
     fitness: "Fitness",
     accountbook: "AccountBook",
     admintool: "AdminTool",
-    apmmarket: "ApmMarket"
+    apmmarket: "ApmMarket",
+    gps: "GPS"
 }
 
 const nativeDemos = import.meta.glob("./gallery/*.vue")
