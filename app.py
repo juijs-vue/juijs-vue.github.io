@@ -1,16 +1,17 @@
 """
 Flask 3.0 port of the original PHP site (index.php, gallery/*.php, play/*.php).
 
-Ported 1:1 in behavior and URL scheme (query-string routing on `/`, the same
-`/play/chart/` path) so every existing hardcoded link in doc/*.html keeps
-working unchanged. The legacy .php files this replaces have been removed;
-everything else (lib/, res/, doc/*.html content fragments, gallery/*/ demo
-pages, play/**/*.css|js|json) is untouched and served as static files.
+Ported 1:1 in behavior and URL scheme (query-string routing on `/`) so every
+existing hardcoded link in doc/*.html keeps working unchanged. The legacy
+.php files this replaces have been removed; everything else (lib/, res/,
+doc/*.html content fragments, gallery/*/ demo pages, play/*/menu.json,
+play/chart/resource/) is untouched and served as static files.
 
-This app is no longer what's deployed (web/ - a static Vue3 SPA - is), and
-is now only useful for local play/chart development (play/chart hasn't been
-converted yet). play/ui has been fully replaced by web/ and its routes
-removed accordingly.
+This app is no longer what's deployed (web/ - a static Vue3 SPA - is). Both
+play/ui and play/chart have been fully replaced by web/ (PlayUi.vue +
+src/demos/ui/*.vue, and PlayChart.vue + src/demos/chart/*.vue respectively)
+and their routes removed accordingly - play/*/menu.json is still served as a
+static asset (web/'s PlayUiMenu.vue and PlayChart.vue read it directly).
 
 Content fragments under doc/ contain no PHP logic (confirmed while porting -
 they're plain HTML), so they're reused verbatim via Jinja `{% include %}`
@@ -66,16 +67,6 @@ def render_template(name, **context):
 def read_json(path):
     with open(os.path.join(BASE_DIR, path), encoding="utf-8") as f:
         return json.load(f)
-
-
-def read_text(path, default=None):
-    full = os.path.join(BASE_DIR, path)
-    if not os.path.exists(full):
-        if default is not None:
-            return default
-        raise FileNotFoundError(full)
-    with open(full, encoding="utf-8") as f:
-        return f.read()
 
 
 def starts_with(haystack, needle):
@@ -139,75 +130,12 @@ def build_gallery_list():
     return items
 
 
-# --------------------------------------------------------------------------
-# Play: shared menu loading (was play/header.php + play/menu.php)
-# --------------------------------------------------------------------------
-
-def load_menu(menu_json_path, page_code):
-    """Loads menu.json and resolves the active item for `page_code`, mirroring
-    play/header.php's per-group `list` filtering and play/menu.php's
-    common-style-first group ordering + active-item resolution.
-
-    The original's group sort comparator (`return $a->title > $b->title`)
-    returns only a boolean, which is a known PHP usort footgun (no signal for
-    "a < b") - not reproduced here, this just sorts by title correctly."""
-    raw = read_json(menu_json_path)
-    group = raw["group"]
-    flat_list = raw["list"]
-
-    for g in group:
-        g["list"] = [item for item in flat_list if item.get("type") == g["type"]]
-
-    data = flat_list[0] if flat_list else None
-    data_index = 0
-
-    common_style = group.pop(0) if group else None
-    group.sort(key=lambda g: g["title"])
-    if common_style is not None:
-        group.insert(0, common_style)
-
-    for g in group:
-        visible = [item for item in g["list"] if not item.get("hide", False)]
-        g["list"] = visible
-        for j, item in enumerate(visible):
-            item["active"] = item.get("code") == page_code
-            if item["active"]:
-                data = item
-                data_index = j
-
-    return group, data, data_index
-
-
-# --------------------------------------------------------------------------
-# Play: Chart (was play/chart/index.php, metadata.php)
-# --------------------------------------------------------------------------
-#
-# export.php's force-download behavior is no longer reimplemented here -
-# play/chart/chart.js's exportTextFile() now POSTs straight to jui-app-server
-# (https://feisty-rigging-490112-v2.appspot.com/export), the same
-# standalone Flask service that already serves this repo's menu.json/
-# facebookgroup data copies, instead of a locally duplicated route.
-
-CHART_DIR = "play/chart"
-
-
-@app.route("/play/chart/")
-def play_chart_index():
-    page_code = request.args.get("p")
-    group, data, data_index = load_menu(f"{CHART_DIR}/menu.json", page_code)
-    csv = data.get("csv", True) if data else True
-    code_content = read_text(f"{CHART_DIR}/json/{data['code']}.js", default="") if data else ""
-
-    return render_template(
-        "play/chart/index.html",
-        group=group, data=data, data_index=data_index, csv=csv, code_content=code_content,
-    )
-
-
-# play/ui (was play/ui/index.php, metadata.php, loader.php) has been fully
-# replaced by web/ (the Vue3 SPA's PlayUi.vue + src/demos/ui/*.vue) - routes
-# removed along with the templates/html/json they rendered. play/ui/menu.json
-# is still served as a static asset (web/'s PlayUiMenu.vue reads it directly).
+# play/ui (was play/ui/index.php, metadata.php, loader.php) and play/chart
+# (was play/chart/index.php, metadata.php, export.php) have both been fully
+# replaced by web/ (PlayUi.vue + src/demos/ui/*.vue, and PlayChart.vue +
+# src/demos/chart/*.vue) - routes removed along with the templates/html/json
+# they rendered. play/*/menu.json is still served as a static asset (web/'s
+# usePlayUiMenu.ts and usePlayChartMenu.ts read it directly).
 
 
 if __name__ == "__main__":

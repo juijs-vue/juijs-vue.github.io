@@ -13,10 +13,10 @@ export const router = createRouter({
     routes: [
         { path: "/", name: "shell", component: Shell },
         { path: "/play/ui/", name: "play-ui", component: () => import("./pages/PlayUi.vue") },
-        // Pilot: play/chart converted to the same architecture as play/ui above
-        // (real .vue SFC demos + a @vue/repl live editor) - currently covers a
-        // single demo (web/src/demos/chart/brush_event.vue) to validate the
-        // approach before converting the rest of play/chart/menu.json's 176.
+        // play/chart converted to the same architecture as play/ui above (real
+        // .vue SFC demos + a @vue/repl live editor) - every entry in
+        // play/chart/menu.json now has a matching web/src/demos/chart/*.vue,
+        // loaded generically by PlayChart.vue via import.meta.glob.
         { path: "/play/chart/", name: "play-chart", component: () => import("./pages/PlayChart.vue") }
     ]
 })
