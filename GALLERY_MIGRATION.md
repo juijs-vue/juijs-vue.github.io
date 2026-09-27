@@ -74,7 +74,7 @@ demo), so these are being converted one at a time rather than in bulk.
       legacy grid.table's own "Total" row, which reused a second `<thead>`
       for the exact same reason) and sticky-pinned to the scroll
       container's bottom edge.
-- [x] `admintool` -> `web/src/pages/gallery/AdminTool.vue` (commit `PENDING`)
+- [x] `admintool` -> `web/src/pages/gallery/AdminTool.vue` (commit `ef0ad8a`)
       - a dashboard with 8 `<Chart>`s (combo/bar/gauge/sparklines/bargauges),
       a `<DataGrid>` order list, and a page-wide Theme selector
       (Jennifer/Dark). The flagship feature (theme switching the WHOLE page)
