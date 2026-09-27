@@ -100,7 +100,7 @@ demo), so these are being converted one at a time rather than in bulk.
       legacy's hotlinked 2015-era external blog image (background noise
       texture) for the identical asset already vendored locally
       (res/img/light-noise.png, already used elsewhere on this site).
-- [x] `apmmarket` -> `web/src/pages/gallery/ApmMarket.vue` (commit `PENDING`)
+- [x] `apmmarket` -> `web/src/pages/gallery/ApmMarket.vue` (commit `05ccbf6`)
       - a marketing landing page, not a real dashboard: 3 hover-flip cards
       (CSS 3D flip, plain markup, no chart) that each open a fullscreen
       popup with its own world-map chart (map.comparebubble/map.selector/
