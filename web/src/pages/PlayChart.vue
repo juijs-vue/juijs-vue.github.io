@@ -15,7 +15,7 @@ import CodeMirror from "@vue/repl/codemirror-editor"
 import "@vue/repl/style.css"
 import type { GridColumn, GridRow } from "jui-grid-vue"
 import { DataGrid } from "jui-grid-vue"
-import { Colorpicker, Tab, Window } from "jui-ui-vue"
+import { Colorpicker, Notify, Tab, Window } from "jui-ui-vue"
 import menu from "../../../play/chart/menu.json"
 import { useStylesheet } from "../composables/useStylesheet"
 import { useBodyClass } from "../composables/useBodyClass"
@@ -70,12 +70,43 @@ const base = import.meta.env.BASE_URL
 // real demo source arrives a tick later.
 const demoSources = import.meta.glob<string>("../demos/chart/*.vue", { query: "?raw", import: "default", eager: true })
 
+// ---------------------------------------------------------------------------
+// localStorage-backed code/theme persistence - restores the legacy Flask
+// shell's "remember what I last typed/themed for this demo" behavior
+// (chart.js's viewCodeEditor()/saveCode()/applyThemeRows(), both on `main`).
+// Same two key prefixes the legacy shell used ("jui.chartplay.code."/
+// "jui.chartplay.theme.", each suffixed with the demo's own key - this page's
+// `code` computed below IS the legacy getChartKey()), so switching demos via
+// the sidebar never mixes up two different demos' saved code/theme.
+//
+// @vue/repl itself does NOT do this on its own - confirmed by reading its
+// dist bundle: the only thing it persists to localStorage is a "show
+// compile-error overlay" toggle (SHOW_ERROR_KEY), nothing about file content,
+// and nothing keyed by demo. So this whole section is required, not optional
+// glue on top of some existing auto-save.
+// ---------------------------------------------------------------------------
+function codeStorageKey(demoCode: string) {
+    return `jui.chartplay.code.${demoCode}`
+}
+function themeStorageKey(demoCode: string) {
+    return `jui.chartplay.theme.${demoCode}`
+}
+
+function demoSourceFor(demoCode: string): string {
+    return demoSources[`../demos/chart/${demoCode}.vue`] ?? `<template>\n  <div>Unknown demo: ${demoCode}</div>\n</template>\n`
+}
+
+// Legacy viewCodeEditor(): "if a cached copy of this demo's code exists, load
+// that instead of the demo's own original source".
+function initialSourceFor(demoCode: string): string {
+    return localStorage.getItem(codeStorageKey(demoCode)) ?? demoSourceFor(demoCode)
+}
+
 const defaultCode = menu.list[0]?.code ?? ""
 
 const route = useRoute()
 const code = computed(() => (typeof route.query.p === "string" ? route.query.p : defaultCode))
-const demoPath = computed(() => `../demos/chart/${code.value}.vue`)
-const initialSource = demoSources[demoPath.value] ?? `<template>\n  <div>Unknown demo: ${code.value}</div>\n</template>\n`
+const initialSource = initialSourceFor(code.value)
 
 // ---------------------------------------------------------------------------
 // Style tab (theme editor) - restores the "Style" tab the old Flask-served
@@ -284,7 +315,13 @@ function themeRowsToObject(): Record<string, unknown> {
 function onThemeRowEdit() {
     const chart = getCurrentBuilder()
     if (!chart) return
-    chart.setTheme(themeRowsToObject())
+    const theme = themeRowsToObject()
+    chart.setTheme(theme)
+    // Legacy applyThemeRows() persisted on every grid edit too (chart.js,
+    // `localStorage.setItem("jui.chartplay.theme." + getChartKey(), ...)`) -
+    // missing from this page's first Style-tab port, added back here so a
+    // theme tweak survives a reload without an explicit "Export Theme" step.
+    localStorage.setItem(themeStorageKey(code.value), JSON.stringify(theme))
 }
 
 // --- "Edit Colors..." popup ----------------------------------------------
@@ -349,8 +386,8 @@ function cancelColorsWindow() {
 // a plain JSON file + a client-side Blob download - functionally equivalent
 // (still a portable, re-importable snapshot of the current theme), just in a
 // format that actually fits the new engine/deployment.
-function exportTextFile(name: string, text: string) {
-    const blob = new Blob([text], { type: "application/json" })
+function exportTextFile(name: string, text: string, type = "application/json") {
+    const blob = new Blob([text], { type })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
@@ -365,6 +402,13 @@ function exportTheme() {
     exportTextFile(`${code.value.split(".").join("_")}_theme.json`, JSON.stringify(themeRowsToObject(), null, 2))
 }
 
+// Single entry point for "this plain theme object is now THE theme for the
+// currently-active demo": fills the grid, pushes it to the live chart, and
+// persists it under this demo's own localStorage key - same JSON shape the
+// Export Theme button writes to a file (colors already a real array, not the
+// grid's "|"-joined display string), so both the file round-trip
+// (importTheme below) and the localStorage round-trip (restoreSavedTheme
+// below) share one format.
 function applyThemeObject(theme: Record<string, unknown>) {
     const rows: ThemeRow[] = []
     for (const key in theme) {
@@ -374,6 +418,7 @@ function applyThemeObject(theme: Record<string, unknown>) {
     themeRows.splice(0, themeRows.length, ...rows)
 
     getCurrentBuilder()?.setTheme(theme)
+    localStorage.setItem(themeStorageKey(code.value), JSON.stringify(theme))
 }
 
 function importTheme(e: Event) {
@@ -392,6 +437,32 @@ function importTheme(e: Event) {
         input.value = ""
     }
     reader.readAsText(file)
+}
+
+// Legacy viewCodeEditor(): "if a theme was cached for this demo, re-apply it
+// on load" (there: `eval(theme)` + `chart.setTheme(jui.include(...))`; here:
+// the same `applyThemeObject()` used by Import Theme/onThemeRowEdit above).
+// The sandboxed demo may still be compiling (first paint, or right after a
+// demo switch) when this runs - retry for ~3s before giving up silently,
+// same shape as refreshThemeGrid()'s own retry loop. Also re-checks `code`
+// itself on every retry: if the user has already switched to a different demo
+// by the time the builder shows up, this stale call must not stomp that demo's
+// theme.
+function restoreSavedTheme(demoCode: string, attemptsLeft = 15) {
+    const saved = localStorage.getItem(themeStorageKey(demoCode))
+    if (!saved) return
+    if (demoCode !== code.value) return
+
+    if (getCurrentBuilder()) {
+        try {
+            applyThemeObject(JSON.parse(saved))
+        } catch (err) {
+            console.error("Failed to restore saved theme", err)
+        }
+        return
+    }
+    if (attemptsLeft <= 0) return
+    setTimeout(() => restoreSavedTheme(demoCode, attemptsLeft - 1), 200)
 }
 
 // --- Style panel layout ------------------------------------------------
@@ -463,15 +534,171 @@ watch(
     { immediate: true }
 )
 
-watch(code, () => {
-    const src = demoSources[demoPath.value] ?? `<template>\n  <div>Unknown demo: ${code.value}</div>\n</template>\n`
-    store.setFiles({ "App.vue": src }, "App.vue")
+watch(code, (newCode) => {
+    store.setFiles({ "App.vue": initialSourceFor(newCode) }, "App.vue")
     // The old chart's Builder (and its `window.__app__`) is gone the instant
     // the sandbox recompiles for the new demo - re-fill (or clear) the grid
     // for whichever demo is now live, same retry-then-give-up behavior as
     // first opening the Style tab.
     if (tabIndex.value === 1) refreshThemeGrid()
+    restoreSavedTheme(newCode)
 })
+
+// ---------------------------------------------------------------------------
+// Notify toast + Clear/Clear All/Save/CSV toolbar - restores the rest of the
+// legacy Flask shell's chrome (chart.js/templates/play/chart/index.html, both
+// on `main`) that the Style-tab port above didn't need yet: chart.js's
+// saveCode()/clearCode()/clearAllCode()/exportCsv()/importCsv(), and the
+// `<Notify ref="notifyRef">` the legacy template mounted at `#chart-shell-
+// modals` next to the "Edit Colors" <Window>.
+//
+// The legacy template also had a header `<select>` to CHANGE themes by name
+// (changeTheme(), chart.js) - deliberately not ported: this new architecture
+// has no such dropdown anywhere (the Style tab's live grid editor replaced
+// it), so there's nothing here for that toast branch to attach to.
+// ---------------------------------------------------------------------------
+
+const notifyRef = ref<{ add: (data: { title: string; message: string; color: string }) => void } | null>(null)
+
+// Legacy menu.json entries can opt individual demos out of the CSV group
+// (`"csv": false` - server-side `csv = data.get("csv", True)` in app.py's
+// play_chart_index()); everything else defaults to showing it.
+const csvEnabled = computed(() => {
+    const entry = (menu.list as { code: string; csv?: boolean }[]).find((item) => item.code === code.value)
+    return entry ? entry.csv !== false : true
+})
+
+function saveCode() {
+    localStorage.setItem(codeStorageKey(code.value), store.activeFile.code)
+    // Legacy saveCode() (chart.js) really did use `color: "danger"` for this
+    // SUCCESS toast - almost certainly a copy-paste mistake there, but kept
+    // as-is here: it's purely cosmetic, and this whole porting pass otherwise
+    // preserves the legacy shell's behavior (including its known-odd bits,
+    // e.g. the dead "Leave a comment" link) rather than second-guessing it.
+    notifyRef.value?.add({
+        title: code.value,
+        message: "The source code has been saved.",
+        color: "danger"
+    })
+}
+
+function clearCode() {
+    if (confirm("Clear the code and data cache?")) {
+        localStorage.removeItem(codeStorageKey(code.value))
+        // Legacy clearCode() did a real `location.reload()` too. A full
+        // reload is simpler and more certain here than hand-resetting
+        // `store`/the Style-tab grid/the sandbox iframe (all three would
+        // otherwise need to be put back exactly to "freshly loaded" by hand),
+        // and it takes the same code path this page already uses for a
+        // normal first visit - route's `?p=` is untouched, so it lands back
+        // on the same demo, now re-reading its original source.
+        location.reload()
+    }
+}
+
+function clearAllCode() {
+    if (confirm("Clear all code and data cache?")) {
+        localStorage.clear()
+        location.reload()
+    }
+}
+
+// Ported from chart.js's getCsvToObject()/dataToCsv() (both pure string/data
+// logic already, no jQuery). The legacy getCsvToObject() built a JS
+// array-literal STRING and `eval()`'d it back into an array to hand to
+// axis(0).update() - this builds the array of row objects directly instead
+// (same field-type inference: bare digits -> number, a single/double-quoted
+// value -> string with the quotes stripped, anything else -> string as-is),
+// same net result without the eval() round-trip.
+function getCsvToObject(csv: string): Record<string, unknown>[] {
+    const rows = csv.split("\n")
+    const fields = rows[0].split(",")
+    const data: Record<string, unknown>[] = []
+
+    for (let i = 1; i < rows.length - 1; i++) {
+        const cells = rows[i].split(",")
+        const record: Record<string, unknown> = {}
+
+        for (let j = 0; j < cells.length; j++) {
+            const v = cells[j].trim()
+            // Legacy getCsvToObject() (chart.js) used `/^[0-9]*$/` - no
+            // leading "-", no decimal point - so re-importing its OWN CSV
+            // export unmodified quoted every negative number back into a
+            // string ("-20" instead of -20), which the demo's chart engine
+            // then can't do axis-range math on (confirmed here: produces
+            // "<path> d: Expected number...VNaN" console errors even on an
+            // untouched round-trip). Widened to `-?digits(.digits)?` so a
+            // straight export -> import round-trip of this page's own CSV
+            // stays numeric, without changing the file format itself.
+            if (/^-?[0-9]+(\.[0-9]+)?$/.test(v)) {
+                record[fields[j]] = Number(v)
+            } else if ((v.startsWith('"') && v.endsWith('"') && v.length >= 2) || (v.startsWith("'") && v.endsWith("'") && v.length >= 2)) {
+                record[fields[j]] = v.slice(1, -1)
+            } else {
+                record[fields[j]] = v
+            }
+        }
+        data.push(record)
+    }
+
+    return data
+}
+
+function dataToCsv(data: Record<string, unknown>[] | undefined | null): string {
+    if (!data || data.length === 0) return ""
+
+    const fields = Object.keys(data[0]).filter((key) => typeof data[0][key] !== "function")
+    const rows = [fields.join(",")]
+
+    for (const row of data) {
+        rows.push(fields.map((f) => String(row[f])).join(","))
+    }
+
+    return rows.join("\n") + "\n"
+}
+
+function exportCsv() {
+    const chart = getCurrentBuilder()
+    if (!chart) return
+    const csv = dataToCsv(chart.get("axis", 0)?.data)
+    exportTextFile(`${code.value.split(".").join("_")}.csv`, csv, "text/csv")
+}
+
+function importCsv(e: Event) {
+    const input = e.target as HTMLInputElement
+    const file = input.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = () => {
+        try {
+            const data = getCsvToObject(String(reader.result))
+            // Real bug this closes, Playwright-confirmed: `data` here is an
+            // array/objects built by THIS PAGE's own Array/Object
+            // constructors, but axis(0).update() runs inside the sandboxed
+            // iframe's own separate JS realm. Handing it that array as-is
+            // silently breaks the chart engine's internal d3 data-join (the
+            // values themselves come back correct from chart.get("axis",0).data
+            // afterwards - this is a rendering-only symptom, not a data
+            // one): every path in the live SVG preview renders as a broken
+            // "…VNaN…" `d` attribute. Round-tripping through the SANDBOX's
+            // OWN `JSON.parse` (not this page's) re-materializes the same
+            // values as plain objects/arrays that belong to the iframe's own
+            // realm, which the chart's data-join handles correctly - a
+            // strictly stronger version of the exact same cross-realm
+            // problem getCurrentBuilder() itself exists to route around for
+            // reading the builder in the first place.
+            const win = getSandboxWindow()
+            const sameRealmData = win ? (win as unknown as { JSON: JSON }).JSON.parse(JSON.stringify(data)) : data
+            getCurrentBuilder()?.axis(0)?.update(sameRealmData)
+        } catch (err) {
+            console.error("Failed to import CSV", err)
+            alert("Invalid CSV file.")
+        }
+        input.value = ""
+    }
+    reader.readAsText(file)
+}
 
 const menuEl = ref<HTMLElement | null>(null)
 async function scrollToActive() {
@@ -485,6 +712,7 @@ async function scrollToActive() {
 }
 onMounted(() => {
     scrollToActive()
+    restoreSavedTheme(code.value)
 })
 watch(code, () => scrollToActive(), { flush: "post" })
 
@@ -518,6 +746,22 @@ function goHome() {
                 <div class="chart-tabs">
                     <Tab v-model="tabIndex" :items="tabItems" />
                     <div class="chart-tab-tools">
+                        <template v-if="tabIndex === 0">
+                            <button type="button" class="btn small" @click="clearCode">Clear</button>
+                            <button type="button" class="btn small" @click="clearAllCode">Clear All</button>
+                            <button type="button" class="btn small" title="Save source code" @click="saveCode">
+                                <i class="icon-save"></i>
+                            </button>
+                            <template v-if="csvEnabled">
+                                <button type="button" class="btn small" title="Export CSV file" @click="exportCsv">
+                                    <i class="icon-download"></i>
+                                </button>
+                                <label class="btn small file-btn" title="Import CSV file">
+                                    <i class="icon-upload"></i>
+                                    <input type="file" accept=".csv,text/csv" @change="importCsv" />
+                                </label>
+                            </template>
+                        </template>
                         <template v-if="tabIndex === 1">
                             <button type="button" class="btn small" title="Export Theme file" @click="exportTheme">
                                 <i class="icon-download"></i>
@@ -608,6 +852,16 @@ function goHome() {
                 <a href="#" class="btn" @click.prevent="cancelColorsWindow(); hide()">Cancel</a>
             </template>
         </Window>
+
+        <!-- Legacy `<Notify ref="notifyRef" position="top-right" :timeout="3000">`
+             (templates/play/chart/index.html, `#chart-shell-modals`). Unlike
+             <Window> above, Notify.vue doesn't <Teleport> itself to <body> -
+             it just needs SOME non-positioned ancestor chain up to the
+             viewport for its own `position: absolute` math to land in the
+             page's actual top-right corner rather than some inner panel's -
+             true here since neither `.play-ui-page` nor anything above it
+             (App.vue's bare `<RouterView />`) sets `position`. -->
+        <Notify ref="notifyRef" position="top-right" :timeout="3000" />
     </div>
 </template>
 
