@@ -1,0 +1,119 @@
+name: Deploy www.jui-vue.io to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # www.jui-vue.io/web depends on jui-chart-vue, jui-grid-vue and jui-ui-vue via
+      # "file:../../<name>" links, and those in turn depend on jui-graph-ts and
+      # jui-core-ts the same way - none of these are published to npm yet, so every
+      # sibling has to be checked out and built here, in dependency order, exactly
+      # like local development already expects them to sit next to each other on disk.
+      - uses: actions/checkout@v4
+        with:
+          repository: juijs-vue/jui-core-ts
+          path: jui-core-ts
+
+      - uses: actions/checkout@v4
+        with:
+          repository: juijs-vue/jui-graph-ts
+          path: jui-graph-ts
+
+      - uses: actions/checkout@v4
+        with:
+          repository: juijs-vue/jui-chart-vue
+          path: jui-chart-vue
+
+      - uses: actions/checkout@v4
+        with:
+          repository: juijs-vue/jui-ui-vue
+          path: jui-ui-vue
+
+      - uses: actions/checkout@v4
+        with:
+          repository: juijs-vue/jui-grid-vue
+          path: jui-grid-vue
+
+      # This is the site being deployed - developed on `vue3` until the Vue3 port
+      # is finished and merged to the default branch.
+      - uses: actions/checkout@v4
+        with:
+          repository: juijs-vue/www.jui-vue.io
+          ref: vue3
+          path: www.jui-vue.io
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            jui-core-ts/package-lock.json
+            jui-graph-ts/package-lock.json
+            jui-chart-vue/package-lock.json
+            jui-ui-vue/package-lock.json
+            jui-grid-vue/package-lock.json
+            www.jui-vue.io/web/package-lock.json
+
+      - name: Build jui-core-ts (local dependency)
+        working-directory: jui-core-ts
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build jui-graph-ts (local dependency, depends on jui-core-ts)
+        working-directory: jui-graph-ts
+        run: |
+          npm ci
+          npm run build:lib
+
+      - name: Build jui-chart-vue (local dependency, depends on jui-graph-ts)
+        working-directory: jui-chart-vue
+        run: |
+          npm ci
+          npm run build:lib
+
+      - name: Build jui-ui-vue (library)
+        working-directory: jui-ui-vue
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build jui-grid-vue (library, depends on jui-ui-vue)
+        working-directory: jui-grid-vue
+        run: |
+          npm ci
+          npm run build:lib
+
+      - name: Build www.jui-vue.io's site
+        working-directory: www.jui-vue.io/web
+        run: |
+          npm ci
+          npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: www.jui-vue.io/web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
