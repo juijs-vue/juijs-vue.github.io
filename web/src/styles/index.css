@@ -615,15 +615,6 @@ footer .line {
 	margin: 0 auto !important;
 }
 
-.center .logo {
-	position: absolute;
-	background-image: url('/res/img/logo.png');
-	background-repeat: no-repeat;
-	width: 58px;
-	height: 32px;
-	top: 7px;
-}
-
 .center .menu {
 	position: absolute;
 	height: 100%;
