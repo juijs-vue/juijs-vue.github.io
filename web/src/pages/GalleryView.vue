@@ -22,7 +22,8 @@ useTitle(computed(() => (item.value ? `JUI Vue: ${item.value.info.title}` : "JUI
 // boundary from ("facebookgroup" -> "FacebookGroup" is unrecoverable by any generic string rule).
 const NATIVE_DEMOS: Record<string, string> = {
     facebookgroup: "FacebookGroup",
-    koreaweather: "KoreaWeather"
+    koreaweather: "KoreaWeather",
+    fitness: "Fitness"
 }
 
 const nativeDemos = import.meta.glob("./gallery/*.vue")

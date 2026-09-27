@@ -24,10 +24,21 @@ demo), so these are being converted one at a time rather than in bulk.
       to itself (even though nothing downstream consumes the selection,
       matching the legacy demo exactly) or its own button label never
       updates after picking an item.
+- [x] `fitness` -> `web/src/pages/gallery/Fitness.vue` (commit `PENDING`) -
+      purely static charts, no interactivity/state beyond what jui-chart-
+      vue's brushes give for free (pie hover/click, tooltip) - heatmap cohort
+      grid + 4 demographic pies + dual-axis line/step growth chart, all
+      `theme="pastel"`. No new bugs found in jui-chart-vue/jui-ui-vue this
+      time; one pre-existing bug in the LEGACY demo itself confirmed (not
+      introduced by the port, not fixed either - ported faithfully): the
+      "Male vs Female" pie's tooltip/label format function looks up
+      `demo_names[0][k]` for BOTH slices but the real legacy site also shows
+      "MALE" as both labels (verified by rendering the old gallery/fitness/
+      index.html side by side before deleting it) - a genuine data/lookup
+      bug in the original, left as-is.
 - [ ] accountbook
 - [ ] admintool
 - [ ] apmmarket
-- [ ] fitness
 - [ ] gps
 - [ ] messi-vs-ronaldo
 - [ ] realtime
