@@ -2,7 +2,7 @@
 import HomeBanner from "../../components/HomeBanner.vue"
 import { useTitle } from "../../composables/useTitle"
 
-useTitle("JUI Framework: HTML5 based UI Framework, Support many components, SVG charts and fast grid.")
+useTitle("JUI Vue: A Vue 3 UI framework with rich components, SVG charts and a fast grid.")
 </script>
 
 <template>
@@ -19,8 +19,8 @@ useTitle("JUI Framework: HTML5 based UI Framework, Support many components, SVG 
                                 <div class="img img-col-1-msg"></div>
                             </div>
                             <p>
-                                스크립트는 개발의 편의성을 위해 jQuery 기반으로<br />
-                                개발되었으며, 스타일은 코드의 재사용과 확장성을 위해<br />
+                                라이브러리는 개발의 편의성을 위해 Vue 3와 TypeScript로<br />
+                                작성되었으며, 스타일은 코드의 재사용과 확장성을 위해<br />
                                 LESS를 사용하였습니다.
                             </p>
                         </div>
@@ -30,10 +30,9 @@ useTitle("JUI Framework: HTML5 based UI Framework, Support many components, SVG 
                                 <div class="img img-col-2-msg"></div>
                             </div>
                             <p>
-                                독립적으로 사용할 수 있는 28종의 스타일 컴포넌트와<br />
-                                다양한 기능을 제공하는 20종의 스크립트 컴포넌트를<br />
-                                제공합니다. 또한 추후에는 슬라이더나 스위치 등 보다 <br />
-                                다양한 UI 컴포넌트도 추가할 예정입니다.
+                                스타일과 인터랙션을 모두 아우르는 다양한 UI 컴포넌트를<br />
+                                제공합니다. 라이브러리가 발전함에 따라 새로운 컴포넌트도<br />
+                                계속 추가되고 있습니다.
                             </p>
                         </div>
                         <div class="col col-4">
@@ -58,9 +57,9 @@ useTitle("JUI Framework: HTML5 based UI Framework, Support many components, SVG 
                                 <div class="img img-col-6-msg"></div>
                             </div>
                             <p>
-                                차트의 배경이 되는 16종의 그리드와 데이터를 표현할<br />
-                                수 있는 77종의 브러쉬 그리고 인터랙션을 담당하는 <br />
-                                19종의 위젯을 제공합니다. 또한 다양한 스타일의 웹 페이지에 적용할 수 있는 테마를 지원합니다.
+                                차트의 배경이 되는 다양한 그리드와 데이터를 표현할<br />
+                                수 있는 여러 브러쉬 그리고 인터랙션을 담당하는 <br />
+                                위젯들을 제공합니다. 또한 다양한 스타일의 차트에 적용할 수 있는 테마를 지원합니다.
                             </p>
                         </div>
                         <div class="col col-4">
@@ -69,9 +68,8 @@ useTitle("JUI Framework: HTML5 based UI Framework, Support many components, SVG 
                                 <div class="img img-col-5-msg"></div>
                             </div>
                             <p>
-                                JUI 프레임워크는 HTML5와 CSS3를 지원하는<br />
-                                대부분의 브라우저에서 동작합니다.<br />
-                                (Chrome, FireFox, Safari, Opera and IE 9+)<br />
+                                JUI Vue는 최신 브라우저 대부분에서 동작합니다.<br />
+                                (Chrome, FireFox, Safari, Edge)<br />
                             </p>
                         </div>
                         <div class="col col-4">

@@ -2,7 +2,7 @@
 import HomeBanner from "../../components/HomeBanner.vue"
 import { useTitle } from "../../composables/useTitle"
 
-useTitle("JUI Framework: HTML5 based UI Framework, Support many components, SVG charts and fast grid.")
+useTitle("JUI Vue: A Vue 3 UI framework with rich components, SVG charts and a fast grid.")
 </script>
 
 <template>
@@ -19,7 +19,7 @@ useTitle("JUI Framework: HTML5 based UI Framework, Support many components, SVG 
                                 <div class="img img-col-1-msg"></div>
                             </div>
                             <p>
-                                A script was developed, which was based on jQuery for development convenience. LESS
+                                The library is built with Vue 3 and TypeScript for development convenience. LESS
                                 is used for styles in order to facilitate the reuse and scalability of code.
                             </p>
                         </div>
@@ -29,9 +29,8 @@ useTitle("JUI Framework: HTML5 based UI Framework, Support many components, SVG 
                                 <div class="img img-col-2-msg"></div>
                             </div>
                             <p>
-                                It provides 28 style components, and 20 script components enabling various
-                                functions. More UI components are scheduled to be added in the future, such as
-                                sliders and switches.
+                                It provides a rich set of UI components covering both styling and interactive
+                                behavior. More components continue to be added as the library evolves.
                             </p>
                         </div>
                         <div class="col col-4">
@@ -54,8 +53,9 @@ useTitle("JUI Framework: HTML5 based UI Framework, Support many components, SVG 
                                 <div class="img img-col-6-msg"></div>
                             </div>
                             <p>
-                                The script provides 16 grids for the background of charts, 77 brushes and 19 widgets
-                                associated with interactivity. Moreover, themes can be applied to web pages.
+                                It provides a wide range of grids for chart backgrounds, brushes to represent your
+                                data and widgets for interactivity. Themes can also be applied to customize the look
+                                of your charts.
                             </p>
                         </div>
                         <div class="col col-4">
@@ -64,9 +64,8 @@ useTitle("JUI Framework: HTML5 based UI Framework, Support many components, SVG 
                                 <div class="img img-col-5-msg"></div>
                             </div>
                             <p>
-                                The JUI library is compatible with most of browsers that support HTML5 and
-                                CSS3<br />
-                                (Chrome, FireFox, Safari, Opera and IE 9+).<br />
+                                JUI Vue works in all modern evergreen browsers<br />
+                                (Chrome, Firefox, Safari and Edge).<br />
                             </p>
                         </div>
                         <div class="col col-4">

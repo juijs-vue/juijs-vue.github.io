@@ -65,7 +65,7 @@ onMounted(() => {
     <footer class="navbar fixed bottom" style="position: relative">
         <div class="center row">
             <div class="col col-8 msg">
-                JUI Framework is an open source project, anyone can join.<br />
+                JUI Vue is an open source project, anyone can join.<br />
                 Designer <a href="mailto:yoha@jennifersoft.com">Yoha</a> and programmer
                 <a href="mailto:seogi777@gmail.com">Alvin</a> and <a href="mailto:cyberuls@gmail.com">Jayden</a>
                 together developed the UI Framework.

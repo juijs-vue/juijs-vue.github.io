@@ -2,7 +2,7 @@
 import { useTitle } from "../../composables/useTitle"
 import { useLegacyScript } from "../../composables/useLegacyScript"
 
-useTitle("JUI Framework: Charts")
+useTitle("JUI Vue: Charts")
 useLegacyScript("/res/chart.js")
 </script>
 

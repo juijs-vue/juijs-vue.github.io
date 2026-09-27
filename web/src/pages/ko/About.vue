@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTitle } from "../../composables/useTitle"
 
-useTitle("JUI Framework: About Us")
+useTitle("JUI Vue: About Us")
 const base = import.meta.env.BASE_URL
 </script>
 

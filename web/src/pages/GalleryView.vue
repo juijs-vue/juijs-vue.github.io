@@ -10,7 +10,7 @@ const base = import.meta.env.BASE_URL
 const galleryId = computed(() => String(route.query.p).slice("gallery.".length))
 const item = computed(() => galleryItems.find((g) => g.name === galleryId.value))
 
-useTitle(computed(() => (item.value ? `JUI Framework: ${item.value.info.title}` : "JUI Framework")).value)
+useTitle(computed(() => (item.value ? `JUI Vue: ${item.value.info.title}` : "JUI Vue")).value)
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTitle } from "../../composables/useTitle"
 
-useTitle("JUI Framework: Getting Started")
+useTitle("JUI Vue: Getting Started")
 </script>
 
 <template>

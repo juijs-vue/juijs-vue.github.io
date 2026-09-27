@@ -2,7 +2,7 @@
 import { useTitle } from "../composables/useTitle"
 import galleryItems from "../generated/gallery.json"
 
-useTitle("JUI Framework: Gallery")
+useTitle("JUI Vue: Gallery")
 
 const base = import.meta.env.BASE_URL
 </script>

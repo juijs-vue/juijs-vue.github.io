@@ -76,21 +76,21 @@ onBeforeUnmount(() => {
         >
             <div class="center" v-if="i === 0">
                 <div class="container">
-                    <div class="title">What is JUI Framework?</div>
+                    <div class="title">What is JUI Vue?</div>
                     <div class="detail">
-                        Simple, and fast, JUI is an all-in-one desktop UI framework.<br />
-                        It offers bootstrap support, style &amp; script components and SVG-based chart components.<br />
-                        All components are free, including JUI Chart.
+                        Simple, and fast, JUI Vue is an all-in-one UI framework for Vue 3.<br />
+                        It offers a rich set of UI components, a fast data grid and SVG-based chart components.<br />
+                        All components are free, including JUI Chart Vue.
                     </div>
                     <a href="https://github.com/juijs-vue/" target="_blank"><div class="img img-download-main"></div></a>
                 </div>
             </div>
             <div class="center" v-else-if="i === 1">
                 <div class="container-2">
-                    <div class="title">Simple &amp; Easy<br />JUI Chart</div>
+                    <div class="title">Simple &amp; Easy<br />JUI Chart Vue</div>
                     <div class="detail">
-                        JUI Chart provides a variety of brushes, axis and widgets.<br />
-                        You can represent data in conjunction with the table component.
+                        JUI Chart Vue provides a variety of brushes, axes and widgets.<br />
+                        You can represent data in conjunction with the JUI Grid Vue table component.
                     </div>
                 </div>
             </div>
@@ -98,7 +98,7 @@ onBeforeUnmount(() => {
                 <div class="container-4">
                     <div class="title">Manipulating SVG Icons<br />With Simple CSS</div>
                     <div class="detail">
-                        JUI Framework includes a variety of vector-type icons.<br />
+                        JUI Vue includes a variety of vector-type icons.<br />
                         That means they can be used at any size.
                     </div>
                 </div>
