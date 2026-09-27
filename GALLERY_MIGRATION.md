@@ -170,7 +170,17 @@ demo), so these are being converted one at a time rather than in bulk.
       project to ever call `toDataURI()` with real content through
       Playwright). Fixed to always `encodeURIComponent` - safe in every
       browser, so there was no real browser-specific behavior worth keeping.
-- [ ] messi-vs-ronaldo
+- [x] `messi-vs-ronaldo` -> `web/src/pages/gallery/MessiVsRonaldo.vue`
+      (commit `0a874aa`) - three static Chart panels (Offense Point:
+      column+line brushes; All Time Stats: mirrored bar brushes; Overall:
+      donut+line+scatter brushes) plus a Season History DataGrid whose rows
+      switch between Messi/Ronaldo via a `<Combo v-model>`. Every brush/
+      widget used (column, line, bar, donut, scatter, legend, tooltip,
+      title) was already registered in jui-chart-vue - no library changes
+      needed. `data.js`'s ~1200 lines of literal player stats were ported
+      via a mechanical `var data =` -> `export default` transform (not
+      hand-retyped) into `web/src/pages/gallery/messi/data.ts`, to avoid
+      transcription errors.
 - [ ] realtime
 - [ ] stockinfo
 - [ ] svgpen
