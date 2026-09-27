@@ -8,6 +8,9 @@ declare module "jui-ui-vue" {
     export const Dropdown: any
     export const Tooltip: any
     export const Tab: any
+    export const Window: any
+    export const Colorpicker: any
+    export const Notify: any
     const plugin: Plugin
     export default plugin
 }
@@ -19,6 +22,26 @@ declare module "jui-grid-vue" {
     export const ColumnMenu: any
     export function rowsToCsv(...args: any[]): string
     export function downloadCsv(...args: any[]): void
+    // play/chart's Style tab (PlayChart.vue) types its theme/color grid rows
+    // against these - loose shapes matching jui-grid-vue's real src/types.ts
+    // (not re-declared in full; this ambient module only needs to satisfy
+    // vue-tsc, not replace the real package's own typings).
+    export interface GridColumn {
+        key: string
+        label?: string
+        width?: number
+        sortable?: boolean
+        resizable?: boolean
+        editable?: boolean
+        align?: "left" | "center" | "right"
+        visible?: boolean
+        children?: GridColumn[]
+    }
+    export interface GridRow<T = Record<string, any>> {
+        id: string | number
+        data: T
+        children?: GridRow<T>[]
+    }
     const plugin: Plugin
     export default plugin
 }
