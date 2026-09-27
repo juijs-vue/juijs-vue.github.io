@@ -100,7 +100,35 @@ demo), so these are being converted one at a time rather than in bulk.
       legacy's hotlinked 2015-era external blog image (background noise
       texture) for the identical asset already vendored locally
       (res/img/light-noise.png, already used elsewhere on this site).
-- [ ] apmmarket
+- [x] `apmmarket` -> `web/src/pages/gallery/ApmMarket.vue` (commit `PENDING`)
+      - a marketing landing page, not a real dashboard: 3 hover-flip cards
+      (CSS 3D flip, plain markup, no chart) that each open a fullscreen
+      popup with its own world-map chart (map.comparebubble/map.selector/
+      map.note/map.bubble brushes, one popup mixing a map with a column
+      chart on a second axis). The legacy popup was an `<iframe>` loading a
+      SEPARATE HTML document, with a scripted width/height/position
+      transition timed around the iframe's load event - replaced with a
+      real `<Teleport to="body">` overlay + a plain CSS opacity transition,
+      since the popup content is just another one of this component's own
+      `<Chart>`s, not a genuinely separate document needing to load.
+      Two real bugs found and fixed:
+      - The popup needs `<Teleport to="body">` at all - this page renders
+        nested inside the site's own shell, and the shell's own persistent
+        nav header (verified via computed style: `z-index: 10000`) sits in
+        a DIFFERENT stacking context than a plain high `z-index` set here
+        can ever beat; teleporting to `<body>` escapes that context
+        entirely (the same reason jui-ui-vue's own `Window.vue` modal does
+        the same).
+      - `recalcMapScale()` (this component's own port of each legacy
+        pop_N.html's window-resize handler, which rescales/repositions the
+        map to fill the popup) could compute a NEGATIVE width/height -
+        `<Chart>` throws on that (SVG rejects negative attribute values) -
+        under an unusual resize timing (a Playwright "capture the whole
+        scrollable page" screenshot mode briefly resizing the viewport
+        surfaced this, but a real, very short window could hit the same
+        path). Added a defensive guard: skip the update entirely when the
+        computed height isn't positive, rather than ever applying a
+        nonsensical size.
 - [ ] gps
 - [ ] messi-vs-ronaldo
 - [ ] realtime
