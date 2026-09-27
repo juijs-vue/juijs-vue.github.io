@@ -35,11 +35,23 @@ const axis = [{
         },
         data : data
     }, {
-        x : {
-            extend : 0
-        },
+        // NOTE: this used to be a nested `x: { extend: 0 }` / `y: { extend: 0, domain: "profit" }`
+        // (grid-level `extend`) - that was never a real, implemented feature of this engine (or
+        // the original jui-chart engine it's ported from: neither one's `chart.grid.*` ever reads
+        // an `extend` key at all - only the AXIS level does, via `Builder`'s own
+        // `extend(axis, options.axis[axis.extend], true)`). With no `domain` of its own, that left
+        // this axis's x-grid with an EMPTY ordinal domain, so `axis.x(...)` returned `null` for
+        // every row - the real root cause of this demo's `<path> attribute d: Expected number,
+        // "Mnull,..."` console error (traced to the "line"/profit brush specifically, not
+        // "waterfall" - Playwright-inspected the live SVG to confirm which brush's `<path>` it
+        // was). Fixed by using the axis-level `extend` this engine actually supports: it merges
+        // axis 0's raw `x`/`y` config into this axis (skipping any key already set here) BEFORE
+        // this axis resolves its own scale against its own `area` - so this axis still gets its
+        // own independently-positioned x/y grids (same type+domain as axis 0, not literally
+        // axis 0's own resolved pixel positions), which is what a "quarter" x-axis paired with a
+        // *different* "profit" y-domain, drawn in a *different* area than axis 0, needs.
+        extend : 0,
         y : {
-            extend : 0,
             domain : "profit"
         },
         area : {
