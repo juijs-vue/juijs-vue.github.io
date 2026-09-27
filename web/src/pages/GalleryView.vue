@@ -24,7 +24,8 @@ const NATIVE_DEMOS: Record<string, string> = {
     facebookgroup: "FacebookGroup",
     koreaweather: "KoreaWeather",
     fitness: "Fitness",
-    accountbook: "AccountBook"
+    accountbook: "AccountBook",
+    admintool: "AdminTool"
 }
 
 const nativeDemos = import.meta.glob("./gallery/*.vue")

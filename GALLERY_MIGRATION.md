@@ -74,7 +74,32 @@ demo), so these are being converted one at a time rather than in bulk.
       legacy grid.table's own "Total" row, which reused a second `<thead>`
       for the exact same reason) and sticky-pinned to the scroll
       container's bottom edge.
-- [ ] admintool
+- [x] `admintool` -> `web/src/pages/gallery/AdminTool.vue` (commit `PENDING`)
+      - a dashboard with 8 `<Chart>`s (combo/bar/gauge/sparklines/bargauges),
+      a `<DataGrid>` order list, and a page-wide Theme selector
+      (Jennifer/Dark). The flagship feature (theme switching the WHOLE page)
+      raised a real architecture question, resolved with the user: rather
+      than injecting a real, unscoped theme stylesheet (which would also
+      re-theme the site's own header/nav - jui-ui-vue only ever globally
+      loads ONE compiled theme, with no runtime-swap mechanism at the app
+      level), discovered that `<Chart theme="...">` (jui-chart-vue) and
+      `<DataGrid theme="...">` (jui-grid-vue) ALREADY support real per-
+      instance theme switching with no cross-page bleed - jui-grid-vue's
+      table styles are already compiled for all 3 themes at once, each
+      scoped under its own `.theme-<name>` class, toggled by the `theme`
+      prop (done by another session, discovered while investigating this).
+      This page's OWN chrome (cards/menu/header, ported from index-dark.css/
+      index-jennifer.css) is restyled the same way - a scoped-in-this-
+      component `theme-<name>` class, never a global stylesheet - so the
+      site's own header/nav can't be affected by this demo's own theme
+      toggle. `jui-chart-vue` still has no "jennifer" theme at all (same gap
+      FacebookGroup's conversion hit) - "Jennifer" maps to its own default
+      for the 8 charts specifically (none of them pass an explicit theme in
+      the original either), while the page chrome and DataGrid get a real
+      jennifer theme. "Dark" is real everywhere. Also substituted the
+      legacy's hotlinked 2015-era external blog image (background noise
+      texture) for the identical asset already vendored locally
+      (res/img/light-noise.png, already used elsewhere on this site).
 - [ ] apmmarket
 - [ ] gps
 - [ ] messi-vs-ronaldo
