@@ -3,10 +3,10 @@ import { ref } from "vue"
 import { Dropdown } from "jui-ui-vue"
 
 const DOWNLOAD_LINKS: Record<string, string> = {
-    "1": "https://github.com/juijs/jui-core/archive/master.zip",
-    "2": "https://github.com/juijs/jui/archive/master.zip",
-    "3": "https://github.com/juijs/jui-grid/archive/master.zip",
-    "4": "https://github.com/juijs/jui-chart/archive/master.zip"
+    "1": "https://github.com/juijs-vue/jui-core-ts/archive/main.zip",
+    "2": "https://github.com/juijs-vue/jui-ui-vue/archive/main.zip",
+    "3": "https://github.com/juijs-vue/jui-grid-vue/archive/main.zip",
+    "4": "https://github.com/juijs-vue/jui-chart-vue/archive/main.zip"
 }
 
 const items = [
