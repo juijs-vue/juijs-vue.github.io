@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@vue/repl": "^4.7.2",
+    "jui-chart-vue": "file:../../jui-chart-vue",
     "jui-grid-vue": "file:../../jui-grid-vue",
     "jui-ui-vue": "file:../../jui-ui-vue",
     "vue": "^3.4.0",

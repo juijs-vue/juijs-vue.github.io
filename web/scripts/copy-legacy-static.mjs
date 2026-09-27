@@ -35,3 +35,10 @@ for (const { from, to } of ENTRIES) {
 fs.mkdirSync(path.join(DIST, "play/ui"), { recursive: true })
 fs.copyFileSync(path.join(DIST, "index.html"), path.join(DIST, "play/ui/index.html"))
 console.log("copied dist/index.html -> dist/play/ui/index.html (path-based route)")
+
+// Same trick for play/chart's own pilot route (see router.ts's "/play/chart/"
+// entry) - the ENTRIES loop above already copied the legacy play/chart/
+// directory's own files (json/, menu.json, chart.css, ...) into dist/play/chart/,
+// so this only adds the one extra index.html alongside them.
+fs.copyFileSync(path.join(DIST, "index.html"), path.join(DIST, "play/chart/index.html"))
+console.log("copied dist/index.html -> dist/play/chart/index.html (path-based route)")
