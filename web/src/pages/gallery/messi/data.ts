@@ -1,16 +1,6 @@
-/**
- * 55	53
- 2009–10[85]	35	34	3	1	11	8	4[b]	4	53	47
- 2010–11[96]	33	31	7	7	13	12	2[c]	3	55	53
- 2011–12[106]	37	50	7	3	11	14	5[d]	6	60	73
- 2012–13[148]	32	46	5	4	11	8	2[c]	2	50	60
- 2013–14[148]	31	28	6	5	7	8	2[c]	0	46	41
- 2014–15[173]	38	43	6	5	13	10	—	57	58
- 2015–16[365]	24	22	4	5	4	5	4[e]	4	36	36
- * @type {{offensePoints: *[]}}
- */
-
-var data = {
+// @ts-nocheck
+// 1:1 ported from legacy gallery/messi-vs-ronaldo/data.js (literal stats data).
+export default {
 	offensePoint: [{
 		messiGoal: 47,
 		messiAssist: 11,
