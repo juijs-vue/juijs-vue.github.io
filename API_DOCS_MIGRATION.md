@@ -42,9 +42,9 @@ works.
       interface with per-field TSDoc, and the defaults const itself is typed
       against that interface (a free correctness check). See the detail
       section below.
-- [x] **Priority 5b: jui-chart-vue's `register/brush/**/*.ts` (84 registered
-      brush types across 77 edited files: 61 flat + 7 `canvas/` + 6 `map/` +
-      3 `polygon/`) - done.** `register/grid/topologytable.ts` (1) and
+- [x] **Priority 5b: jui-chart-vue's `register/brush/**/*.ts` (all 84
+      registered brush types, every file touched) - done.**
+      `register/grid/topologytable.ts` (1) and
       `register/theme`/`register/icon`/`register/pattern` (7) remain
       explicitly deferred - see note below (unchanged from before). See the
       detail section below.
@@ -183,12 +183,19 @@ TSDoc comment (read from the file's own `draw()`/`drawBefore()`/event-
 handler logic, not guessed from the field name), the defaults const typed
 against it, and `as Record<string, unknown>` added to the `static setup()`
 return statement (same structural-assignability reason as Priority 5a).
-84 registered brush types across 77 edited files. 7 brushes were confirmed
-to declare **no** options of their own at all (no `static setup()`, or one
-that returns only inherited/base fields with nothing brush-specific):
-`candlestick.ts`, `circlegauge.ts`, `ohlc.ts`, `path.ts`, `rangearea.ts`,
-`canvas/bubblecloud.ts`, `map/flightroute.ts` - left untouched, not
-skipped by oversight. Several brushes (`stackcolumn`, `fullstackcolumn3d`,
+84 registered brush types across 84 edited files. 7 brushes were confirmed
+to declare **no** own config fields at all: `candlestick.ts`, `ohlc.ts`,
+`path.ts`, `rangearea.ts`, `canvas/bubblecloud.ts`, `map/flightroute.ts`
+(no `static setup()` at all, or one returning only inherited/base fields),
+plus `circlegauge.ts` (had one real field, `clip`, but as a previously
+untyped inline `{ clip: false }` literal rather than a named
+`_OWN_DEFAULTS` const). All 7 still got a named type for `jui-api-doc` to
+point at: `circlegauge.ts` got a real `CircleGaugeBrushOptions` interface
+(typed the same as every other brush), and the other 6 - which genuinely
+add nothing beyond the inherited base - got `export type XxxBrushOptions
+= BrushOptions`, a direct alias to `jui-graph-ts`'s own base `BrushOptions`
+(imported from `'jui-graph-ts'`), rather than an empty interface. Several
+brushes (`stackcolumn`, `fullstackcolumn3d`,
 `fullstackcylinder3d`, `stackcylinder3d`, `patterncolumn`, `imagecolumn`,
 `bubble3d`, `stackline`, `stackarea`, `stackscatter`, and others) extend a
 sibling brush and inherit its `setup()` via real class inheritance with no
