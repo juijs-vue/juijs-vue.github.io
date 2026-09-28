@@ -790,8 +790,16 @@ footer .line {
 .home .img-col-1 {
 	background-position: 0 0;
 }
-.home .img-col-1-msg {
-	background-position: 0 -322px;
+
+/* Legacy sprite (res/img/home.png) still baked "jQuery & Less Based" as pixels here -
+   real text instead of a sprite frame so it stays accurate as the stack changes. */
+.home .title-msg {
+	display: block;
+	height: 22px;
+	line-height: 22px;
+	font-size: 15px;
+	font-weight: 700;
+	color: #333;
 }
 
 .home .img-col-2 {

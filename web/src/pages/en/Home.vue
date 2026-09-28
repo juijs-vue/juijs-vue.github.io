@@ -16,7 +16,7 @@ useTitle("JUI Vue: A Vue 3 UI framework with rich components, SVG charts and a f
                         <div class="col col-4">
                             <div class="title">
                                 <div class="img img-col-1 icon"></div><br />
-                                <div class="img img-col-1-msg"></div>
+                                <div class="title-msg">Vue 3 & TypeScript Based</div>
                             </div>
                             <p>
                                 The library is built with Vue 3 and TypeScript for development convenience. LESS

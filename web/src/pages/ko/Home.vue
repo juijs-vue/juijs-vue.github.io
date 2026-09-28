@@ -16,7 +16,7 @@ useTitle("JUI Vue: A Vue 3 UI framework with rich components, SVG charts and a f
                         <div class="col col-4">
                             <div class="title">
                                 <div class="img img-col-1 icon"></div><br />
-                                <div class="img img-col-1-msg"></div>
+                                <div class="title-msg">Vue 3 & TypeScript 기반</div>
                             </div>
                             <p>
                                 라이브러리는 개발의 편의성을 위해 Vue 3와 TypeScript로<br />
