@@ -260,9 +260,29 @@ reading a key the active theme doesn't set gets `undefined` back from
 `chart.theme(key)` at runtime, which is exactly the class of bug
 `classic.ts` (theme)'s own "Map Chart styles" block comment already
 documents happening for real (a thrown, chart-aborting `TypeError` before
-that block was added). Fixing the cross-theme inconsistency itself (making
-every theme set every key) is a content decision, explicitly left out of
-this typing pass.
+that block was added).
+
+**`pastel.ts`'s 40 missing keys specifically were investigated, not just
+flagged and left**: `pastel.ts`'s own header comment already establishes
+it was byte-for-byte extracted from the real live `www.jui-vue.io` bundle
+- the real production "pastel" theme genuinely only has 318 keys, so
+inventing values for the 40 it lacks would fabricate configuration that
+was never real (the opposite of this project's "literal port of real
+behavior" rule - `pastel.ts` isn't broken, it's faithful). Checked whether
+this is actually reachable: `theme="pastel"` is used in exactly one place
+site-wide (`Fitness.vue`, 6 `<Chart>`s), exclusively with
+`heatmap`/`pie`/`line`/`scatter`/`tooltip`/`title` - none of which read
+any of the 40 missing keys unsafely (`pie.ts`'s one read,
+`pieDisableBackgroundOpacity`, has a defensive `|| 0.5` fallback; the
+other affected types - `guideline`, `ratebar`, `selectbox`,
+`canvas.bubblecloud`, `canvas.equalizercolumn` - are never combined with
+`pastel` anywhere in this repo's gallery demos or the 161 `play/chart`
+JSON configs, confirmed by grep). So: a real, documented gap, currently
+unreachable in practice, correctly left as `pastel` actually is - not
+"fixed" by putting words in the real site's mouth. Full writeup in
+`register/theme/types.ts`'s own header comment. Making every theme set
+every key (a real content decision, not a typing one) remains out of
+scope.
 
 Verified the same way as the no-value-changed brush batch above:
 `vue-tsc -p tsconfig.lib.json --noEmit` clean (all ~358 inferred types
