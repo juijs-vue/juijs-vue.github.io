@@ -47,6 +47,15 @@ import playShellStyleHref from "../styles/play-shell.css?url"
 import juiChartVueEsUrl from "jui-chart-vue?url"
 import juiChartVueCssUrl from "jui-chart-vue/style.css?url"
 import vueEsmBrowserUrl from "vue/dist/vue.esm-browser.js?url"
+// jui-chart-vue's own lib build externalizes "jui-graph-ts" (vite.lib.config.ts's
+// `external: ['vue', 'jui-graph-ts']` - fixes the dual-module-instance registry bug where bundling
+// a private copy of it inside jui-chart-vue split its `registerWidget`/`registerBrush` registry
+// from a consumer's own import). That means the sandbox's native-ESM import map needs its own entry
+// for "jui-graph-ts" too, the same self-hosted-URL approach as "jui-chart-vue" itself - without it,
+// EVERY demo fails identically with "Failed to resolve module specifier 'jui-graph-ts'" the moment
+// jui-chart-vue's own code tries to import it (confirmed: this was silently broken on the live site
+// for all 161 play/chart demos before this fix, not something introduced by a demo-specific bug).
+import juiGraphTsEsUrl from "jui-graph-ts?url"
 
 const shellCss = useStylesheet(playShellStyleHref)
 
@@ -211,7 +220,8 @@ const store = useStore({
         mergeImportMap(vueImportMap.value, {
             imports: {
                 vue: vueEsmBrowserUrl,
-                "jui-chart-vue": juiChartVueEsUrl
+                "jui-chart-vue": juiChartVueEsUrl,
+                "jui-graph-ts": juiGraphTsEsUrl
             }
         })
     )
