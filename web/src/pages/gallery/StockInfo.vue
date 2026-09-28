@@ -14,7 +14,8 @@
 // only mounts once the data has finished loading and been processed (v-if="dataReady") - avoids
 // needing any placeholder axis config that would need correcting again once data arrives.
 import { nextTick, onMounted, reactive, ref } from "vue"
-import { Chart, timeUtil } from "jui-chart-vue"
+import { Chart } from "jui-chart-vue"
+import { timeUtil } from "jui-graph-ts"
 import {
     type StockRow,
     getDailyTableData,

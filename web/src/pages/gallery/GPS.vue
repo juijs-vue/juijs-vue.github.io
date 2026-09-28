@@ -12,7 +12,8 @@
 // comment) - registered locally, right here, the same way jui-chart-vue's own register/widget/*.ts
 // files register the built-in ones, just living in this repo instead.
 import { ref, onMounted, onBeforeUnmount } from "vue"
-import { Chart, colorUtil } from "jui-chart-vue"
+import { Chart } from "jui-chart-vue"
+import { colorUtil } from "jui-graph-ts"
 import "./gps/radarWidget"
 import "./gps/compassWidget"
 import { stopRadarSweep } from "./gps/radarWidget"

@@ -17,7 +17,7 @@
 // the SVG root's own live `getBoundingClientRect()` - the same "mouse position relative to the
 // drawing surface's own top-left corner" intent, generalized to work regardless of surrounding
 // chrome (same category of fix as gps's Teleport-to-body/apmmarket's z-index work).
-import { CoreWidget, registerWidget } from "jui-chart-vue"
+import { CoreWidget, registerWidget } from "jui-graph-ts"
 import { ModeMove } from "./modeMove"
 import { ModePen } from "./modePen"
 import { ModePointer } from "./modePointer"

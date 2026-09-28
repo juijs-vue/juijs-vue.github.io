@@ -3,7 +3,7 @@
 // self-contained random-data-generation functions live here - the 3 setInterval loops that call
 // them stay in RealTime.vue itself (they're glue tightly coupled to each <Chart>'s own
 // getBuilder()/axis()/updateBrush() calls, not reusable data logic).
-import { timeUtil } from "jui-chart-vue"
+import { timeUtil } from "jui-graph-ts"
 
 export function randomValue(start: number, limit: number): number {
     return Math.floor(Math.random() * limit) + start

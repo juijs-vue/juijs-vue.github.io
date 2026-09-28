@@ -2,7 +2,7 @@
 // Port of gallery/gps/widget/compass.js ("chart.widget.compass", extend: "chart.widget.core") -
 // a demo-specific widget (not part of jui-chart-vue's own shared registry, per explicit decision -
 // see radarWidget.ts's own header comment for the same reasoning).
-import { CoreWidget, registerWidget, mathUtil } from "jui-chart-vue"
+import { CoreWidget, registerWidget, mathUtil } from "jui-graph-ts"
 
 export const COMPASS_WIDGET_DEFAULTS = {
     degree: 255,

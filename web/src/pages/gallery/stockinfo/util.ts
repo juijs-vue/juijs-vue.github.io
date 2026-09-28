@@ -4,7 +4,7 @@
 // `start`/`end` ROW-INDEX range - these indices come straight from either a bubble-chart year
 // click (getYearIndexes) or a zoomscroll drag (jui-chart-vue's own `zoomscroll.dragend` event,
 // which already emits [start, end] as row indices into the axis's own backing array).
-import { timeUtil } from "jui-chart-vue"
+import { timeUtil } from "jui-graph-ts"
 
 export interface StockRow {
     date: Date

@@ -11,7 +11,7 @@
 // framework hook that would ever stop this timer on unmount - GPS.vue's own onBeforeUnmount calls
 // `stopRadarSweep()` explicitly instead, exactly filling the gap `window.timer` filled by being
 // globally reachable at all (module-scoped here instead of on `window`).
-import { CoreWidget, registerWidget, mathUtil } from "jui-chart-vue"
+import { CoreWidget, registerWidget, mathUtil } from "jui-graph-ts"
 
 let activeTimer: ReturnType<typeof setInterval> | null = null
 export function stopRadarSweep(): void {
