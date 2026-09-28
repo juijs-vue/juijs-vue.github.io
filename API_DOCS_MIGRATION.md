@@ -262,36 +262,60 @@ reading a key the active theme doesn't set gets `undefined` back from
 documents happening for real (a thrown, chart-aborting `TypeError` before
 that block was added).
 
-**`pastel.ts`'s 40 missing keys specifically were investigated, not just
-flagged and left**: `pastel.ts`'s own header comment already establishes
-it was byte-for-byte extracted from the real live `www.jui-vue.io` bundle
-- the real production "pastel" theme genuinely only has 318 keys, so
-inventing values for the 40 it lacks would fabricate configuration that
-was never real (the opposite of this project's "literal port of real
-behavior" rule - `pastel.ts` isn't broken, it's faithful). Checked whether
-this is actually reachable: `theme="pastel"` is used in exactly one place
-site-wide (`Fitness.vue`, 6 `<Chart>`s), exclusively with
-`heatmap`/`pie`/`line`/`scatter`/`tooltip`/`title` - none of which read
-any of the 40 missing keys unsafely (`pie.ts`'s one read,
-`pieDisableBackgroundOpacity`, has a defensive `|| 0.5` fallback; the
-other affected types - `guideline`, `ratebar`, `selectbox`,
-`canvas.bubblecloud`, `canvas.equalizercolumn` - are never combined with
-`pastel` anywhere in this repo's gallery demos or the 161 `play/chart`
-JSON configs, confirmed by grep). So: a real, documented gap, currently
-unreachable in practice, correctly left as `pastel` actually is - not
-"fixed" by putting words in the real site's mouth. Full writeup in
-`register/theme/types.ts`'s own header comment. Making every theme set
-every key (a real content decision, not a typing one) remains out of
-scope.
+**Revised: the cross-theme gaps were investigated further and mostly
+FIXED, not just documented.** The first pass here left the gaps as an
+accepted, documented limitation on the reasoning that `theme="pastel"` is
+only combined with brush/widget types that don't read the missing keys
+anywhere in this repo's own demos. That reasoning was wrong: a
+theme/brush/widget combination is a real, consumer-controlled choice for
+anyone building on this library, not limited to what this repo's own
+demos happen to exercise - "could be combined" is a real use case, not a
+hypothetical one to wave away. Re-investigated with that framing: of the
+56 total gap occurrences across all 5 theme files (40 in `pastel.ts`, 3 in
+`classic.ts`, 2 in `dark.ts`, 6 in `gradient.ts`, 5 in `pattern.ts`), 36
+were confirmed byte-identical across every theme that already set
+them - i.e. real, theme-agnostic shared defaults that were simply missing
+from one or more files, not genuine per-theme customization - and were
+restored (same evidentiary bar `classic.ts`'s own earlier "Map Chart
+styles" fix already used, see `mapPathBackgroundColor`'s comment above).
+This is NOT re-guessing what a theme "should" look like; it's recovering
+a value that's provably identical everywhere else, meaning it was never
+actually theme-specific to begin with - `pastel.ts`'s own header comment
+being "byte-for-byte extracted from the real production site" is still
+true, it just turns out that extraction was missing some keys the real
+site's OTHER themes prove were never meant to vary by theme.
 
-Verified the same way as the no-value-changed brush batch above:
-`vue-tsc -p tsconfig.lib.json --noEmit` clean (all ~358 inferred types
-were confirmed correct by the compiler accepting every one of the 5 themes'
-real values with zero errors - a strong cross-check on the type-inference
-script itself, not just an assertion), `build`/`build:lib` succeed, `npx
-vitest run` 242/242 pass, and every theme file's diff against its pre-edit
-version is 3 lines (one new import, one type-annotation swap) - confirmed
-via `git diff`, no literal value touched anywhere.
+The remaining 20 occurrences (7 distinct keys: `barActiveBackgroundColor`,
+`selectBoxBackgroundColor`/`BackgroundOpacity`/`BorderColor`/
+`BorderOpacity`, `crossBorderDashArray`, `zoomScrollButtonImage`) stay
+un-restored for a real reason each, not an oversight: `barActiveBackgroundColor`
+and `selectBox*` genuinely differ (or are only defined) in 2 or fewer
+themes with disagreeing values, so no single faithful value exists to
+port - filling one in would be actual fabrication, unlike the 36 restored
+ones. `crossBorderDashArray` is additionally dead code everywhere - no
+widget in this repo ever reads it, in any theme. `zoomScrollButtonImage`
+is defined in exactly 1 of 5 themes with nothing to cross-check against,
+and is also never read anywhere. Full writeup, including which specific
+key went where, is in `register/theme/types.ts`'s own header comment and
+each affected file's own inline comment at the exact restored/skipped
+block.
+
+Initial typing pass verified the same way as the no-value-changed brush
+batch above: `vue-tsc -p tsconfig.lib.json --noEmit` clean (all ~358
+inferred types were confirmed correct by the compiler accepting every one
+of the 5 themes' real values with zero errors - a strong cross-check on
+the type-inference script itself, not just an assertion), `build`/
+`build:lib` succeed, `npx vitest run` 242/242 pass, and every theme
+file's diff against its pre-edit version was 3 lines (one new import, one
+type-annotation swap) - confirmed via `git diff`, no literal value
+touched. The LATER cross-theme-gap restoration pass is a real value
+change (36 keys added across `pastel.ts`/`gradient.ts`, plus
+documentation-only comments in `classic.ts`/`dark.ts`/`gradient.ts`/
+`pattern.ts`) - re-verified the same way (`vue-tsc`/`build`/`build:lib`
+clean) plus `pastel.spec.ts`'s own key-count assertion updated (318 ->
+353) and a new test asserting the restored values match every other
+theme's shared value while the 7 deliberately-skipped keys stay
+`undefined` - `npx vitest run` now 243/243 pass.
 
 ## Steps (for any future per-file "author a named Options interface" work
 ## - revisiting a brush/widget/grid with a real behavior change, or a new
