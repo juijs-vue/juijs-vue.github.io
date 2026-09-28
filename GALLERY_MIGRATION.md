@@ -246,7 +246,61 @@ demo), so these are being converted one at a time rather than in bulk.
       interaction works end-to-end (year click -> summary/volume/table
       filter + custom hover tooltip popover). Also re-ran a full
       regression sweep across every previously-completed gallery demo.
-- [ ] svgpen
+- [x] `svgpen` -> `web/src/pages/gallery/SvgPen.vue` (commit `6713d3a`) -
+      an SVG path drawing tool (reference: http://editor.method.ac/):
+      "pointer" mode selects a drawn path and shows draggable vertex/
+      control-point handles (live-reshapes it), "pen" mode draws
+      freehand, "move" mode shows resize handles around a clicked item
+      (dragging them was never implemented in the legacy original
+      either - a preserved gap, not something this port introduced).
+
+      The bespoke drawing engine (~1000 reachable lines across
+      `util/PathParser.js` + 5 of its 7 `widget/*.js` files) is ported
+      into `svgpen/*.ts` and registered as a LOCAL "drawing.canvas"
+      widget - same precedent as `gps`'s "radar"/"compass" widgets.
+      `drawing.mode.pen2.js` (340 lines, a bezier pen tool) and
+      `drawing.mode.shape.js` (113 lines) are NOT ported - their own
+      toolbar buttons are HTML-commented-out in the legacy `index.html`
+      itself and nothing else ever activates them, confirmed dead code.
+
+      Two real bugs found and fixed:
+      - `appendToCanvas()` (drawn path elements, appended live during a
+        pen stroke) used a raw DOM `appendChild` only, bypassing this
+        port's own tracked-`children[]` render model -
+        `jui-graph-ts`'s `SVG.render()` rebuilds a group's DOM content
+        from that tracked list on every render pass (deliberate,
+        documented design), silently dropping anything appended outside
+        it. Fixed to also register via `pathArea.append()`, matching
+        the two-step pattern this demo's OTHER live-append call sites
+        already used correctly.
+      - `<Chart height="100%">` didn't cascade through this layout's
+        absolutely-positioned container chain - the underlying SVG
+        collapsed to ~150px tall instead of the real 920px (measured),
+        silently breaking both mouse hit-testing and the visible
+        drawing area. Fixed with an explicit numeric height, matching
+        the proven convention every other chart in this whole migration
+        already uses - genuinely the first demo here to pass a
+        percentage `height` at all.
+
+      Also a demo-local fix: pointer mode's ctrl-click-to-delete read a
+      DOM attribute's index as a string, string-concatenating instead
+      of adding 1 (`"3"+1` -> `"31"`) and crashing on totally ordinary
+      use - fixed with `Number(...)`.
+
+      Adapted `pos()`/`getDistX()`/`getDistY()` from the legacy's
+      hardcoded 50/30px viewport offsets (tuned to its own fixed,
+      chrome-less page layout) to the SVG root's own live
+      `getBoundingClientRect()`, so mouse coordinates stay correct
+      regardless of this site's own surrounding nav/heading chrome.
+
+      Verified via real Playwright mouse interactions: freehand pen
+      drawing produces a correct path, pointer mode shows a handle per
+      vertex (22 for a 22-point stroke) and dragging one live-reshapes
+      the path, move mode shows all 9 resize/move guide elements, zero
+      console errors. Also re-ran a full regression sweep across all 10
+      other gallery demos - zero console errors on any of them.
+
+## All 11 gallery demos converted.
 
 No particular order was requested - smallest-first is a reasonable default.
 Rough sizes surveyed 2026-09-27 (gps/stockinfo's line counts are mostly
