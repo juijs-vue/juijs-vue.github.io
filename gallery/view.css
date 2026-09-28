@@ -1,0 +1,45 @@
+.gallery-view-container {
+    display:block;
+    margin:0 auto;
+    margin-top:100px;
+    width: 90%;
+    max-width:90%;
+}
+
+.gallery-view-container iframe {
+    border:1px solid #eee;
+
+}
+
+.gallery-view-info {
+	position: relative;
+}
+
+.gallery-view-info .author {
+	position: absolute;
+	right: 0px;
+	top: 28px;
+	font-size: 12px;
+	color: #353030;
+}
+
+.gallery-view-info .author > a {
+	text-decoration: none;
+	color: #353030;
+}
+
+.gallery-view-info .link {
+	position: absolute;
+	right: 0px;
+	top: 5px;
+	cursor: pointer;
+	font-size: 12px;
+	color: #333;
+	text-decoration: none;
+}
+
+.gallery-view-info .link > i {
+	position: absolute;
+	top: 2px;
+	right: 72px;
+}

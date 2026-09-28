@@ -1,0 +1,16 @@
+{
+	"name": "stockinfo",
+	"version": "1.0.0",
+	"title": "Stock Information",
+	"description": "Nasdaq 100 Index 1985/11/01-2012/06/29",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"stock", "dashboard", "nasdaq", "javascript", "jui", "chart"
+	],
+	"author": "alvin",
+	"email": "seogi777@gmail.com",
+	"license": "MIT",
+	"height" : "1240px"
+}

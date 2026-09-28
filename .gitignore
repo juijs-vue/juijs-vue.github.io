@@ -1,0 +1,12 @@
+# Eclipse
+.project
+.metadata
+.settings
+
+# WebStorm
+.idea/
+
+# NodeJS
+node_modules/
+web/dist/
+web/src/generated/

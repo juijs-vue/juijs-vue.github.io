@@ -1,0 +1,395 @@
+/* Legacy 12-column float grid (.row/.col), used throughout the example markup for layout.
+   Ported from lib/jui/css/ui.min.css - the old jui.js UI kit provided these classes, but the
+   new Vue/jui-ui-vue loader (loader.html) no longer loads that whole stylesheet, only
+   jui-ui-vue's own component CSS (which has no .row/.col - it's a component library, not a
+   layout grid). Re-added here, scoped to this playground only, so examples that arrange
+   components via .row/.col (most of them) don't silently lose their layout.
+
+   NOTE: an earlier port of this block copied `.row{margin-bottom:5px}` and
+   `.col{padding-left:4px;padding-right:4px}` as if they were unconditional defaults - they
+   aren't. In the original, `margin-bottom:5px` is scoped to `.navbar .row` only, and the
+   padding only applies when the row carries an explicit `.gutter-N` modifier
+   (`.row.gutter-4 .col`, `.row.gutter-8 .col`, etc). Bare `.row`/`.col` has no margin or
+   padding of its own beyond the clearfix and box model below - verified directly against
+   lib/jui/css/ui.min.css's actual selectors. */
+.row:after, .row:before {
+	display: table;
+	content: " ";
+	clear: both;
+}
+.row.gutter-4 .col { padding-left: 4px; padding-right: 4px; }
+.row.gutter-8 .col { padding-left: 8px; padding-right: 8px; }
+.row.gutter-12 .col { padding-left: 12px; padding-right: 12px; }
+.row.gutter-20 .col { padding-left: 20px; padding-right: 20px; }
+.row.gutter-24 .col { padding-left: 24px; padding-right: 24px; }
+.col {
+	position: relative;
+	min-height: 1px;
+	width: 8.333333333333332%;
+	box-sizing: border-box;
+	float: left;
+}
+.col-1 { width: 8.333333333333332%; }
+.col-2 { width: 16.666666666666664%; }
+.col-3 { width: 25%; }
+.col-4 { width: 33.33333333333333%; }
+.col-5 { width: 41.66666666666667%; }
+.col-6 { width: 50%; }
+.col-7 { width: 58.333333333333336%; }
+.col-8 { width: 66.66666666666666%; }
+.col-9 { width: 75%; }
+.col-10 { width: 83.33333333333334%; }
+.col-11 { width: 91.66666666666666%; }
+.col-12 { width: 100%; }
+
+/* Base */
+section:not(:first-child) {
+	margin-top: 50px;
+}
+
+section:first-child {
+	margin-top: -25px;
+}
+
+section:last-child {
+	margin-bottom: 75px;
+}
+
+/* Sentense */
+p {
+    font-family: "Noto Sans", "Nanum Gothic", "Dotum", "sans-serif";
+	color: #666;
+	font-size: 0.9em;
+	line-height: 1.6em;
+}
+
+p.br {
+	margin-top: 25px;
+}
+
+/* Header */
+h1 {
+	font-size: 32px;
+	margin-top: -10px;
+	margin-bottom: 0;
+	color: #8772bf;
+	font-weight: 500;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 9px;
+}
+
+h2 {
+	font-size: 24px;
+	color: #2b3340;
+	margin-top: 30px;
+	font-weight: 400;
+}
+
+h3 {
+	font-size: 18px;
+	color: #666;
+	margin-top: 30px;
+	margin-bottom: 0px;
+	font-weight: 400;
+}
+
+/* Tables */
+table:not(.table):not(.xtable):not(.body) {
+    font-family: "Noto Sans", "Nanum Gothic", "Dotum", "sans-serif";
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+	border: 1px solid #dcdcdc;
+	 -webkit-border-radius: 2px;
+	 -moz-border-radius: 2px;
+	      border-radius: 2px;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+table:not(.table):not(.xtable):not(.body) {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+table:not(.table):not(.xtable):not(.body) tr:nth-child(odd) {
+	background-color:#fafafa;
+}
+table:not(.table):not(.xtable):not(.body) tr:nth-child(even) {
+	background-color:#ffffff;
+}
+table:not(.table):not(.xtable):not(.body) td {
+	vertical-align: middle;
+	border: 1px solid #dcdcdc;
+	border-width: 0px 1px 1px 0px;
+	text-align: left;
+	padding: 10px;
+	font-weight: normal;
+	font-size: 12px;
+	color: #000000;
+}
+table:not(.table):not(.xtable):not(.body) tr:last-child td{
+	border-width: 0px 1px 0px 0px;
+}
+table:not(.table):not(.xtable):not(.body) tr td:last-child{
+	border-width: 0px 0px 1px 0px;
+}
+table:not(.table):not(.xtable):not(.body) tr:last-child td:last-child{
+	border-width: 0px 0px 0px 0px;
+}
+table:not(.table):not(.xtable):not(.body) tr:first-child td{
+	background-color: #f5f5f5;
+	text-align: center;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+/* Dark */
+body.dark {
+	background-color: #1c1c1c;
+}
+body.dark .col {
+	color: #666 !important;
+}
+body.dark h2 {
+	color: #d5d5d5 !important;
+}
+
+body.dark table:not(.table):not(.xtable):not(.body) tr:first-child td {
+	color: #fff !important;
+}
+
+body.dark table:not(.table):not(.xtable):not(.body) td {
+	color: #666 !important;
+	border: 1px solid #666 !important;
+}
+
+body.dark table:not(.table):not(.xtable):not(.body) tr:nth-child(odd),
+body.dark table:not(.table):not(.xtable):not(.body) tr:first-child td {
+	background-color: #2c2c2c !important;
+}
+
+body.dark table:not(.table):not(.xtable):not(.body) tr:nth-child(even) {
+	background-color: #262626 !important;
+}
+
+/* Bargraph */
+.bargraph {
+  position: relative;
+  display: inline-block;
+}
+.bargraph > * {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 15px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.bargraph > * .detail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -10px;
+}
+.bargraph > * .detail > .line {
+  border-bottom-width: 0;
+  height: 8px;
+}
+.bargraph > * .detail > .data {
+  width: 30px;
+  margin-top: -18px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.bargraph > *:not(:first-child) .line {
+  border-left-width: 0;
+}
+.bargraph > *.active:not(:first-child) .line {
+  border-left-width: 1px;
+}
+.bargraph > * .title {
+  height: 32px;
+  line-height: 32px;
+  font-size: 0.75em;
+}
+.bargraph > * .data {
+  font-size: 0.8em;
+}
+.bargraph > * + *:not(ul) {
+  margin-left: -7px;
+}
+.bargraph > *:not(:first-child):not(:last-child):not(ul) {
+  -webkit-border-radius: 0px !important;
+  -moz-border-radius: 0px !important;
+  border-radius: 0px !important;
+}
+.bargraph > *:first-child {
+  -webkit-border-top-right-radius: 0px !important;
+  -moz-border-radius-topright: 0px !important;
+  border-top-right-radius: 0px !important;
+  -webkit-border-bottom-right-radius: 0px !important;
+  -moz-border-radius-bottomright: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+.bargraph > *:last-child {
+  -webkit-border-top-left-radius: 0px !important;
+  -moz-border-radius-topleft: 0px !important;
+  border-top-left-radius: 0px !important;
+  -webkit-border-bottom-left-radius: 0px !important;
+  -moz-border-radius-bottomleft: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
+.bargraph.normal > * .title {
+  height: 32px;
+  line-height: 32px;
+  font-size: 0.75em;
+}
+.bargraph.normal > * .data {
+  font-size: 0.8em;
+}
+.bargraph.small > * .title {
+  height: 25px;
+  line-height: 25px;
+}
+.bargraph + .bargraph {
+  margin-left: 5px;
+}
+.bargraph > * .line {
+  border: 1px solid #ebebeb;
+}
+.bargraph > * .data {
+  color: #969696;
+}
+.bargraph > *:first-child {
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-left-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  border-bottom-left-radius: 5px;
+}
+.bargraph > *:last-child {
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  border-bottom-right-radius: 5px;
+}
+.bargraph > *.active .line {
+  border-color: #d0d0d0;
+}
+.bargraph > *.active .data {
+  color: #333;
+}
+.bargraph:not(.flat) > * {
+  border: 1px solid #bebebe;
+  -webkit-box-shadow: inset 0 0 0 1px rgba(255,255,255,.3);
+  -moz-box-shadow: inset 0 0 0 1px rgba(255,255,255,.3);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.3);
+  background-color: #fff;
+  background-image: -moz-linear-gradient(top, #fff 0%, #e9e9e9 100%);
+  background-image: linear-gradient(top, #fff 0%, #e9e9e9 100%);
+  background-image: -webkit-linear-gradient(top, #fff 0%, #e9e9e9 100%);
+  background-image: -o-linear-gradient(top, #fff 0%, #e9e9e9 100%);
+  background-image: -ms-linear-gradient(top, #fff 0%, #e9e9e9 100%);
+}
+.bargraph:not(.flat) > *:hover {
+  background-color: #fff;
+  background-image: -moz-linear-gradient(top, #fff 0%, #f0f0f0 100%);
+  background-image: linear-gradient(top, #fff 0%, #f0f0f0 100%);
+  background-image: -webkit-linear-gradient(top, #fff 0%, #f0f0f0 100%);
+  background-image: -o-linear-gradient(top, #fff 0%, #f0f0f0 100%);
+  background-image: -ms-linear-gradient(top, #fff 0%, #f0f0f0 100%);
+}
+.bargraph:not(.flat) > *.active {
+  background-color: #ede2ff;
+  background-image: -moz-linear-gradient(top, #ede2ff 0%, #d4bff1 100%);
+  background-image: linear-gradient(top, #ede2ff 0%, #d4bff1 100%);
+  background-image: -webkit-linear-gradient(top, #ede2ff 0%, #d4bff1 100%);
+  background-image: -o-linear-gradient(top, #ede2ff 0%, #d4bff1 100%);
+  background-image: -ms-linear-gradient(top, #ede2ff 0%, #d4bff1 100%);
+}
+.bargraph:not(.flat) > *.active .title {
+  color: #333;
+}
+.bargraph:not(.flat) > * .title {
+  color: #969696;
+}
+.bargraph:not(.flat) > * .data {
+  background: white;
+}
+.bargraph.flat > * {
+  -webkit-box-shadow: inset 0 0 0 1px rgba(255,255,255,.3);
+  -moz-box-shadow: inset 0 0 0 1px rgba(255,255,255,.3);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.3);
+}
+.bargraph.flat > * .title {
+  color: #fff;
+}
+.bargraph.flat > * .data {
+  background: white;
+}
+.bargraph.flat > .success {
+  border: 1px solid #cdbadf;
+  background-color: #cdbadf;
+}
+.bargraph.flat > .success.active {
+  border-color: #8959b6;
+  background-color: #8959b6;
+}
+.bargraph.flat > .info {
+  border: 1px solid #b5d4ee;
+  background-color: #c0dcf3;
+}
+.bargraph.flat > .info.active {
+  border-color: #4e9bdb;
+  background-color: #69aee8;
+}
+.bargraph.flat > .warning {
+  border: 1px solid #f4d897;
+  background-color: #f8de96;
+}
+.bargraph.flat > .warning.active {
+  border-color: #eca402;
+  background-color: #f5b400;
+}
+/* Select example container styles */
+.select-container {
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ececec;
+}
+
+.select-container h1 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 0;
+    display: block;
+    border-bottom: 0px;
+}
+
+.select-container h3 {
+    margin-top: 30px;
+    margin-bottom: 0px;
+    padding-top: 0;
+    display: block;
+    border-bottom: 0px;
+}
+
+/* Specific container sizes */
+.select-container-500-500 {
+    width: 500px;
+    height: 500px;
+    overflow: auto;
+}
+
+.select-container-500-300 {
+    width: 500px;
+    height: 300px;
+}

@@ -1,0 +1,16 @@
+{
+	"name": "koreaweather",
+	"version": "1.0.0",
+	"title": "Weather of the Korea",
+	"description": "It's easy to see the weather map of South Korea, it is a dashboard that provides a variety of information.",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"weather", "dashboard", "korea"
+	],
+	"author": "hyoensu",
+	"email": "incleaf@gmail.com",
+	"license": "MIT",
+	"height": "780px"
+}

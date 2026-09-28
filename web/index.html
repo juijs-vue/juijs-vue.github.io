@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/nanumgothic.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic" />
+    <link rel="shortcut icon" href="/res/img/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="/res/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/lib/jui/css/ui.min.css" />
+    <link rel="stylesheet" href="/lib/jui/css/ui-jennifer.min.css" />
+    <link rel="stylesheet" href="/lib/prism.css" />
+
+    <title>JUI Vue - UI Framework for Vue 3</title>
+  </head>
+  <body class="jui">
+    <div id="app"></div>
+    <!-- 레거시 jquery+jui core/ui/chart - res/chart.js(홈 배너 차트, 손대지 않기로 함)가
+         필요로 해서 원본처럼 전 페이지에 로드한다. 새 Vue 컴포넌트들과는 아이디/마크업이
+         겹치지 않아 충돌 없음(다운로드 드롭다운 등은 jui-ui-vue의 진짜 Dropdown으로 대체됨). -->
+    <script src="/lib/jquery-1.8.0.min.js"></script>
+    <script src="/lib/jui/js/core.min.js"></script>
+    <script src="/lib/jui/js/chart.min.js"></script>
+    <script src="/lib/prism.js"></script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

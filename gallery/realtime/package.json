@@ -1,0 +1,15 @@
+{
+	"name": "realtime",
+	"version": "1.0.0",
+	"title": "Real-time Monitoring Dashboard",
+	"description": "Dashboard for monitoring system status and visitor services, etc.",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"apm", "dashboard", "server", "realtime", "chart"
+	],
+	"author": "alvin and yoha",
+	"license": "MIT",
+	"height": "1000px"
+}

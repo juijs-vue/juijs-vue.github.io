@@ -1,0 +1,29 @@
+{
+  "name": "jui-vue-web",
+  "version": "0.0.1",
+  "private": true,
+  "description": "www.jui-vue.io site shell as a Vue 3 + TypeScript SPA (Phase 1: site shell)",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/build-gallery-manifest.mjs && vite",
+    "build": "node scripts/build-gallery-manifest.mjs && vue-tsc --noEmit && vite build && node scripts/copy-legacy-static.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vue/repl": "^4.7.2",
+    "jui-chart-vue": "file:../../jui-chart-vue",
+    "jui-graph-ts": "file:../../jui-graph-ts",
+    "jui-grid-vue": "file:../../jui-grid-vue",
+    "jui-ui-vue": "file:../../jui-ui-vue",
+    "vue": "^3.4.0",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.8",
+    "acorn": "^8.18.0",
+    "acorn-walk": "^8.3.5",
+    "typescript": "^5.7.0",
+    "vite": "^8.3.0",
+    "vue-tsc": "^2.1.0"
+  }
+}

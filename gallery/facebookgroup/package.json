@@ -1,0 +1,16 @@
+{
+	"name": "facebookgroup",
+	"version": "1.0.0",
+	"title": "Facebook Group",
+	"description": "Facebook group network, statistics, status and so on.",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"facebook", "group", "statistics"
+	],
+	"author": "donghyun",
+	"email": "egaoneko@naver.com",
+	"license": "MIT",
+	"height": "2105px"
+}

@@ -1,0 +1,45 @@
+<script setup lang="ts">
+import { useTitle } from "../../composables/useTitle"
+
+useTitle("JUI Vue: About Us")
+const base = import.meta.env.BASE_URL
+</script>
+
+<template>
+<div class="col col-12 about">
+    <article>
+        <div class="row">
+            <div class="col col-4">
+                <img :src="`${base}res/img/alvin.png`" />
+                <div class="name">Alvin Hong</div>
+                <p>
+                    <strong>Project Leader</strong><br/>
+
+                    A committed programmer since high school, Alvin is passionate about his work and loves to learn.  He is a 30 years old with a youngster's enthusiasm for programming.
+                </p>
+            </div>
+            <div class="hr"></div>
+            <div class="col col-4">
+                <img :src="`${base}res/img/jayden.png`" />
+                <div class="name">Jayden Park</div>
+                <p>
+                    <strong>Senior Programmer</strong><br/>
+
+                    Jayden is a father of 3 kids and has recently changed his profile photo on Facebook to a photo of his twins. Programming is his only hopeness he struggles to recover a separate identity.
+                </p>
+            </div>
+            <div class="hr"></div>
+            <div class="col col-4">
+                <img :src="`${base}res/img/yoha.png`" />
+                <div class="name">Yoha Choi</div>
+
+                <p>
+                    <strong>Senior UI Designer</strong><br/>
+
+                    Yoha is in charge of UI design, supervising all design activities related to JENNIFER5. However, she takes an interest in many different areas of design, not just user interfaces.
+                </p>
+            </div>
+        </div>
+    </article>
+</div>
+</template>
