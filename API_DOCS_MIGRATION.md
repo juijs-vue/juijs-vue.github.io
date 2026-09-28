@@ -52,17 +52,11 @@ works.
       the theme files specifically - one shared interface across all 5,
       not per-file, and every field optional because the 5 themes
       genuinely don't all set the same keys.
-- [ ] Priority 5c: wire `register/widget`'s and `register/brush`'s new
-      `XxxOptions` interfaces into `jui-api-doc` itself. These are plain
-      `.ts` files, not `.vue` components, and none of them are re-exported
-      from `jui-chart-vue/src/index.ts` (confirmed - only `Chart`/`Builder`/
-      `GRID_TYPES`/a few `Chart.vue`-level types are) - TypeDoc is the right
-      tool (not `vue-component-meta`), pointed at an `entryPoints` array of
-      the individual `register/widget/**/*.ts` + `register/brush/**/*.ts`
-      files rather than a single barrel import (there isn't one). Not done
-      yet - 5a/5b/grid+icon+pattern+theme are now all done, so this can be
-      picked up any time, or explicitly ask for it sooner if the docs are
-      wanted standalone.
+- [x] **Priority 5c: wire every `register/**` type's `XxxOptions`
+      interface into `jui-api-doc` itself - done.** New
+      `typedoc.chart-vue-register.json` + `jui-chart-vue/tsconfig.doc-register.json`,
+      output to `jui-api-doc/chart-vue-register/`, wired into
+      `.vitepress/config.ts`'s nav/sidebar. See the detail section below.
 
 ## Priority 4 detail (jui-ui-vue)
 
@@ -316,6 +310,58 @@ clean) plus `pastel.spec.ts`'s own key-count assertion updated (318 ->
 353) and a new test asserting the restored values match every other
 theme's shared value while the 7 deliberately-skipped keys stay
 `undefined` - `npx vitest run` now 243/243 pass.
+
+## Priority 5c detail (wiring `register/**` into `jui-api-doc`)
+
+`register/**/*.ts` isn't re-exported from `jui-chart-vue/src/index.ts`
+(confirmed - only `Chart`/`Builder`/`GRID_TYPES` are), and there's no
+single barrel file covering it, so TypeDoc needed `entryPointStrategy:
+"expand"` pointed at the whole `register` directory (new
+`jui-api-doc/typedoc.chart-vue-register.json`) rather than the single-file
+`entryPoints` the `core-ts`/`graph-ts` configs use - TypeDoc then crawls
+and documents every module under it (84 brush + 19 widget + 1 grid + 1
+icon + 1 pattern + 6 theme + `chartMap.ts`/`gridTypes.ts` files;
+`setup.ts` has no exports of its own so it doesn't get a real page).
+`.spec.ts` files and the two test-stub helpers
+(`canvas/testCanvasStub.ts`, `map/testMapXhrStub.ts`) are excluded via the
+config's own `exclude` glob.
+
+**A real blocker, not anticipated by the original plan**: pointing this at
+the existing `jui-chart-vue/tsconfig.lib.json` failed outright -
+`tsconfig.lib.json`'s own `include` also pulls in `src/index.ts` and
+`src/Chart.vue`, and plain `typedoc`/`tsc` (unlike `vue-tsc`, which has
+the Vue language service plugin) can't resolve a `.vue` import at all,
+so TypeDoc's program construction errored on `Cannot find module
+'./Chart.vue'` before it ever got to documenting anything. Fixed with a
+new, narrower `jui-chart-vue/tsconfig.doc-register.json` whose `include`
+is only `src/register/**/*.ts` - safe because nothing under `register/`
+imports a `.vue` file (confirmed), so this scoped config needs no Vue
+resolution at all.
+
+Output goes to `jui-api-doc/chart-vue-register/` (gitignored, same as
+`core-ts/`/`graph-ts/`), wired into `.vitepress/config.ts`'s `nav`/
+`sidebar` and `index.md`'s feature list, and added as a new
+`docs:gen:chart-vue-register` npm script folded into the top-level
+`docs:gen`.
+
+Verified: `npm run docs:gen:chart-vue-register` succeeds standalone (0
+errors, 11 warnings - unexported-but-referenced private helper types and
+one unknown `@method` tag, the same harmless category `core-ts`/
+`graph-ts` already have), the full `npm run docs:build` succeeds
+end-to-end alongside the existing `core-ts`/`graph-ts`/components
+generation with no new errors, and a local `vite preview` of the built
+`.vitepress/dist` was Playwright-checked (not just "the build didn't
+crash"): the new section's landing page, a brush's own `XxxBrushOptions`
+interface page (`TimelineBrushOptions`), a grid's own options interface
+page (`TopologyTableGridOptions`), a theme's own variable page
+(`pastelTheme`), and the icon union type page (`ClassicIconName`) all
+return 200 with zero console errors, and the interface pages render each
+field's real TSDoc description (not a placeholder or raw `unknown`) -
+confirmed by reading the actual rendered page text, not just checking the
+HTTP status. `jui-api-doc` is still not a git repository (unchanged from
+earlier in this file's own history) - these file changes exist on disk in
+that directory but aren't committed anywhere; git-initializing it remains
+a separate, not-yet-requested decision.
 
 ## Steps (for any future per-file "author a named Options interface" work
 ## - revisiting a brush/widget/grid with a real behavior change, or a new
