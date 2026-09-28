@@ -50,11 +50,16 @@ nav {
 	background-repeat: no-repeat !important;
 }
 
+/* nth-child(2)/(3): legacy jQuery had these `display: none` by default and relied on
+   `$slide.show()` (which sets an inline `style="display:block"`, always winning over this
+   class-selector rule) to reveal them - HomeBanner.vue's `v-show` doesn't work that way (when
+   shown, it clears the inline style rather than forcing `display:block`), so these stylesheet
+   rules were permanently masking slides 2/3 regardless of `v-show`'s own state. Removed - `v-show`
+   now fully owns visibility. */
 .main > nav:nth-child(2) {
 	background-color: #dbe1ee !important;
 	background-image: url("/res/img/headline2.png") !important;
 	background-repeat: no-repeat !important;
-	display: none;
 }
 
 /*
@@ -70,7 +75,6 @@ nav {
 	background-color: #cfcfcf !important;
 	background-image: url("/res/img/headline4.png") !important;
 	background-repeat: repeat-x !important;
-	display: none;
 }
 
 .main .dotnav {
