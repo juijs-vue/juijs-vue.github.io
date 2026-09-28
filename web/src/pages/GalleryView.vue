@@ -29,7 +29,8 @@ const NATIVE_DEMOS: Record<string, string> = {
     apmmarket: "ApmMarket",
     gps: "GPS",
     "messi-vs-ronaldo": "MessiVsRonaldo",
-    realtime: "RealTime"
+    realtime: "RealTime",
+    stockinfo: "StockInfo"
 }
 
 const nativeDemos = import.meta.glob("./gallery/*.vue")
