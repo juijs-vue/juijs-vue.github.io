@@ -42,36 +42,33 @@ works.
       interface with per-field TSDoc, and the defaults const itself is typed
       against that interface (a free correctness check). See the detail
       section below.
-- [ ] Priority 5b: jui-chart-vue's `register/brush/**/*.ts` (~85 files:
-      65 flat + 9 `canvas/` + 8 `map/` + 3 `polygon/`) + `register/grid`
-      (1) + `register/theme`/`register/icon`/`register/pattern` (7, though
-      these are large flat theme-value dictionaries shared across
-      classic/dark/gradient/pastel/pattern, not per-type "options" the way
-      brush/widget are - lower priority, see note below) - **not started.**
-      This is the largest remaining chunk and the highest-risk one (same
-      "reverse-engineering real behavior" risk `dragselect`/`gps`/`realtime`
-      already demonstrated - see `GALLERY_MIGRATION.md`). Tackle the
-      most commonly-used brushes first (bar/line/column/area/pie/scatter)
-      rather than all 85 at once, and cross-check each new interface against
-      a real demo/gallery usage before marking it done - the same
-      evidentiary standard `GALLERY_MIGRATION.md` already uses. The
-      `register/theme/*.ts` files are a different kind of "options" (a huge
-      flat style-key dictionary - `Record<string, unknown>` today - shared
-      by ONE interface across all 5 theme files, not authored per-file) and
-      are lower-value to document than brush/widget since end users select
-      a theme by name string rather than constructing one inline - fine to
-      defer past the brush work, not before it.
-- [ ] Priority 5c: wire `register/widget`'s (and later `register/brush`'s)
-      new `XxxOptions` interfaces into `jui-api-doc` itself. These are plain
+- [x] **Priority 5b: jui-chart-vue's `register/brush/**/*.ts` (84 registered
+      brush types across 77 edited files: 61 flat + 7 `canvas/` + 6 `map/` +
+      3 `polygon/`) - done.** `register/grid/topologytable.ts` (1) and
+      `register/theme`/`register/icon`/`register/pattern` (7) remain
+      explicitly deferred - see note below (unchanged from before). See the
+      detail section below.
+- [ ] Priority 5c: wire `register/widget`'s and `register/brush`'s new
+      `XxxOptions` interfaces into `jui-api-doc` itself. These are plain
       `.ts` files, not `.vue` components, and none of them are re-exported
       from `jui-chart-vue/src/index.ts` (confirmed - only `Chart`/`Builder`/
       `GRID_TYPES`/a few `Chart.vue`-level types are) - TypeDoc is the right
       tool (not `vue-component-meta`), pointed at an `entryPoints` array of
-      the individual `register/widget/**/*.ts` files rather than a single
-      barrel import (there isn't one). Not done yet because it makes more
-      sense to wire this once for both widgets and brushes together than to
-      redo the TypeDoc config twice - do this after 5b, or explicitly ask
-      for it sooner if the widget docs are wanted standalone.
+      the individual `register/widget/**/*.ts` + `register/brush/**/*.ts`
+      files rather than a single barrel import (there isn't one). Not done
+      yet - both 5a and 5b are now done, so this can be picked up any time,
+      or explicitly ask for it sooner if the widget/brush docs are wanted
+      standalone.
+- [ ] `register/grid/topologytable.ts` (1 file) and `register/theme`/
+      `register/icon`/`register/pattern` (7 files) - **explicitly deferred,
+      not part of Priority 5b.** `register/theme/*.ts` files are a different
+      kind of "options" (a huge flat style-key dictionary -
+      `Record<string, unknown>` today - shared by ONE interface across all 5
+      theme files, not authored per-file) and are lower-value to document
+      than brush/widget since end users select a theme by name string rather
+      than constructing one inline. `topologytable.ts`'s own grid config is
+      a similarly small, single-file, lower-traffic surface. Fine to defer
+      indefinitely unless specifically requested.
 
 ## Priority 4 detail (jui-ui-vue)
 
@@ -177,38 +174,93 @@ self-hosting `jui-graph-ts`'s own `dist-lib` ES build the same way
 `jui-chart-vue` itself already was (see `PlayChart.vue`'s own comment at
 the fix site for the full explanation).
 
-## Steps (per brush, for Priority 5b when it's picked up - same steps
-## Priority 5a's 19 widgets already went through)
+## Priority 5b detail (jui-chart-vue brushes)
 
-1. Read the brush's `.ts` file fully, including its `_OWN_DEFAULTS` object
-   and any file-header porting-history comment.
+Same pattern as Priority 5a's widgets, applied to every `register/brush/
+**/*.ts` file (flat + `canvas/`/`map/`/`polygon/`): each `_OWN_DEFAULTS`
+object got a named, exported `XxxBrushOptions` interface with a per-field
+TSDoc comment (read from the file's own `draw()`/`drawBefore()`/event-
+handler logic, not guessed from the field name), the defaults const typed
+against it, and `as Record<string, unknown>` added to the `static setup()`
+return statement (same structural-assignability reason as Priority 5a).
+84 registered brush types across 77 edited files. 7 brushes were confirmed
+to declare **no** options of their own at all (no `static setup()`, or one
+that returns only inherited/base fields with nothing brush-specific):
+`candlestick.ts`, `circlegauge.ts`, `ohlc.ts`, `path.ts`, `rangearea.ts`,
+`canvas/bubblecloud.ts`, `map/flightroute.ts` - left untouched, not
+skipped by oversight. Several brushes (`stackcolumn`, `fullstackcolumn3d`,
+`fullstackcylinder3d`, `stackcylinder3d`, `patterncolumn`, `imagecolumn`,
+`bubble3d`, `stackline`, `stackarea`, `stackscatter`, and others) extend a
+sibling brush and inherit its `setup()` via real class inheritance with no
+override of their own - these got a re-exported `type XxxBrushOptions =
+SiblingBrushOptions` alias purely so a future doc page for that registered
+name has something to point at, matching `map/tooltip.ts`'s precedent from
+Priority 5a.
+
+**Verification methodology for this batch, and why it differs from
+Priority 5a's live-Playwright sweep**: every one of the 77 edits is
+provably a type-annotation-only change - no `_OWN_DEFAULTS` literal value
+(number, string, boolean, or array/object shape) was touched, only type
+annotations added around the existing values and inline `as X` casts
+removed in favor of typing the const itself. This was checked
+programmatically, not just asserted: a script extracted each file's
+pre-edit and post-edit `_OWN_DEFAULTS` object body from git history,
+stripped `as <type>` casts and whitespace, and diffed the two - all 33
+files that showed a textual difference were confirmed by hand to be
+artifacts of the stripping regex choking on multi-argument function-type
+casts (e.g. `null as ((this: unknown, data: BrushData) => unknown) | null`
+has internal commas/parens), never an actual literal-value change. Since
+TS type annotations erase at compile time and the underlying object
+literals are byte-for-byte unchanged, `vue-tsc -p tsconfig.lib.json
+--noEmit` (clean), `npm run build:lib` (succeeds), and `npx vitest run`
+(242/242 pass) together already prove there is no behavior change for this
+specific kind of edit - unlike Priority 4/5a, which also changed real
+logic (Window.vue's `move`→`moveTo` fix, the PlayChart sandbox fix) and
+therefore genuinely needed a live-rendered Playwright check to catch a
+possible regression. A live Playwright sweep was **not** re-run against
+the deployed site for this batch on that basis; if a future brush edit
+under this same file touches an actual default *value* (not just its
+type), it needs the full Steps-style live verification, not this
+shortcut.
+
+## Steps (for any future per-file "author a named Options interface" work
+## - `register/grid/topologytable.ts`, `register/theme`/`register/icon`/
+## `register/pattern`, or revisiting a brush/widget with a real behavior
+## change - same steps Priority 5a's widgets and 5b's brushes went through)
+
+1. Read the file fully, including its `_OWN_DEFAULTS` object and any
+   file-header porting-history comment.
 2. Grep the file for every `brush.<field>`/`widget.<field>` read (or
    equivalent `this.brush`/`this.widget` cast-and-index access) to see how
    each option actually affects behavior - don't document a field's meaning
    from its name alone.
 3. Find at least one real demo (`gallery/*`, `play/chart/demos/*`) that
-   actually uses this brush type and read how it configures it.
-4. Author a named, exported `XxxBrushOptions` interface capturing the real
+   actually uses this type and read how it configures it.
+4. Author a named, exported `XxxOptions` interface capturing the real
    field shapes (not just `Record<string, unknown>`), with a TSDoc comment
    per field describing what it does. Type the `_OWN_DEFAULTS` const
-   against it too (`export const XXX_BRUSH_OWN_DEFAULTS: XxxBrushOptions = {...}`)
-   - this is itself a correctness check, not just documentation.
+   against it too - this is itself a correctness check, not just
+   documentation.
 5. Every `static setup(): Record<string, unknown> { return XXX_OWN_DEFAULTS }`
    will need `XXX_OWN_DEFAULTS as Record<string, unknown>` at the return
    statement once the const is typed against a real interface (a named
    interface without an index signature isn't structurally assignable to
-   `Record<string, unknown>` - Priority 5a hit this on every single file).
+   `Record<string, unknown>`).
 6. Re-run `npx vue-tsc -p tsconfig.lib.json --noEmit` and `npm run
    build:lib` in `jui-chart-vue`, plus `npx vitest run` - a wrong field type
    or behavior change will usually surface in one of these first.
-7. Live-verify with Playwright against the demo found in step 3 (gallery
-   demos render directly; `play/chart` demos go through the live-editable
-   sandbox, whose own import-map now correctly resolves `jui-graph-ts` as
-   of this same session - see Priority 5a's own note above if it breaks
-   again).
+7. If the change is type-annotation-only (no literal default value
+   changed - verify this the way Priority 5b's detail section above did,
+   not just by assuming it), steps 4-6 are sufficient. If any actual
+   default value or logic changed, live-verify with Playwright against the
+   demo found in step 3 (gallery demos render directly; `play/chart` demos
+   go through the live-editable sandbox, whose own import-map correctly
+   resolves `jui-graph-ts` as of Priority 5a's own fix - see that section's
+   note if it breaks again).
 8. Wiring into `jui-api-doc` itself is tracked separately as Priority 5c -
-   don't block marking a brush "done" here on that, but do keep this file
-   and `jui-api-doc`'s `scripts/generate-component-docs.mjs`/`typedoc.*.json`
-   in sync once 5c actually happens.
-9. Only then mark it done in this file's Status section, citing the demo
-   you cross-checked against.
+   don't block marking something "done" here on that, but do keep this
+   file and `jui-api-doc`'s
+   `scripts/generate-component-docs.mjs`/`typedoc.*.json` in sync once 5c
+   actually happens.
+9. Only then mark it done in this file's Status section, citing what you
+   cross-checked against.
