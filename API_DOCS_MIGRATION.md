@@ -43,11 +43,15 @@ works.
       against that interface (a free correctness check). See the detail
       section below.
 - [x] **Priority 5b: jui-chart-vue's `register/brush/**/*.ts` (all 84
-      registered brush types, every file touched) - done.**
-      `register/grid/topologytable.ts` (1) and
-      `register/theme`/`register/icon`/`register/pattern` (7) remain
-      explicitly deferred - see note below (unchanged from before). See the
+      registered brush types, every file touched) - done.** See the
       detail section below.
+- [x] **`register/grid/topologytable.ts`, `register/icon/classic.ts`,
+      `register/pattern/classic.ts`, `register/theme/{classic,dark,
+      gradient,pastel,pattern}.ts` - done** (previously deferred, now
+      picked up). See the detail section below for what "done" means for
+      the theme files specifically - one shared interface across all 5,
+      not per-file, and every field optional because the 5 themes
+      genuinely don't all set the same keys.
 - [ ] Priority 5c: wire `register/widget`'s and `register/brush`'s new
       `XxxOptions` interfaces into `jui-api-doc` itself. These are plain
       `.ts` files, not `.vue` components, and none of them are re-exported
@@ -56,19 +60,9 @@ works.
       tool (not `vue-component-meta`), pointed at an `entryPoints` array of
       the individual `register/widget/**/*.ts` + `register/brush/**/*.ts`
       files rather than a single barrel import (there isn't one). Not done
-      yet - both 5a and 5b are now done, so this can be picked up any time,
-      or explicitly ask for it sooner if the widget/brush docs are wanted
-      standalone.
-- [ ] `register/grid/topologytable.ts` (1 file) and `register/theme`/
-      `register/icon`/`register/pattern` (7 files) - **explicitly deferred,
-      not part of Priority 5b.** `register/theme/*.ts` files are a different
-      kind of "options" (a huge flat style-key dictionary -
-      `Record<string, unknown>` today - shared by ONE interface across all 5
-      theme files, not authored per-file) and are lower-value to document
-      than brush/widget since end users select a theme by name string rather
-      than constructing one inline. `topologytable.ts`'s own grid config is
-      a similarly small, single-file, lower-traffic surface. Fine to defer
-      indefinitely unless specifically requested.
+      yet - 5a/5b/grid+icon+pattern+theme are now all done, so this can be
+      picked up any time, or explicitly ask for it sooner if the docs are
+      wanted standalone.
 
 ## Priority 4 detail (jui-ui-vue)
 
@@ -230,10 +224,59 @@ under this same file touches an actual default *value* (not just its
 type), it needs the full Steps-style live verification, not this
 shortcut.
 
+## `register/grid`/`register/icon`/`register/pattern`/`register/theme` detail
+
+`register/grid/topologytable.ts` got the same treatment as any single
+brush/widget: a named `TopologyTableGridOptions` interface for its
+`sort`/`space` fields, typed const, `as Record<string, unknown>` cast on
+`static setup()`.
+
+`register/icon/classic.ts` and `register/pattern/classic.ts` aren't
+`_OWN_DEFAULTS`-shaped at all (no `static setup()`, no brush/widget/grid
+class) - they're flat data registered via `registerIcon`/`registerTheme`
+directly, so the "named Options interface" pattern doesn't apply as-is.
+Instead: `classic.ts` (icon) got a `ClassicIconName` union type derived
+from the icon map's own keys (`as const satisfies Record<string, string>`
++ `keyof typeof`), giving real autocomplete/documentation of which icon
+names exist without hand-listing ~190 string literals a second time.
+`classic.ts` (pattern) got a named `SvgPatternDescriptor` interface for
+each `{type, attr, children}` entry, replacing `Record<string, unknown>`.
+
+`register/theme/{classic,dark,gradient,pastel,pattern}.ts` are the "huge
+flat style-key dictionary" case the Status section already flagged as
+different from brush/widget: **one shared interface, not five**, since all
+5 files configure the same underlying key space with different values,
+not five distinct config surfaces. `register/theme/types.ts`'s
+`ChartThemeOptions` (~358 fields) was derived by actually reading every
+literal value in all 5 files (a script extracted each file's own key set
+and inferred a type per key from its real value, not the key name) and
+confirming there is exactly one consistent type per key across every file
+that sets it - zero keys are e.g. a string in one theme and a number in
+another. Every field is optional, and this is itself a real, newly
+surfaced finding, not a hedge: the 5 theme files do **not** all configure
+the same keys (`pastel.ts` alone omits 40 keys the other 4 all set; 3 more
+keys are each missing from at least one of the other 4) - a brush/widget
+reading a key the active theme doesn't set gets `undefined` back from
+`chart.theme(key)` at runtime, which is exactly the class of bug
+`classic.ts` (theme)'s own "Map Chart styles" block comment already
+documents happening for real (a thrown, chart-aborting `TypeError` before
+that block was added). Fixing the cross-theme inconsistency itself (making
+every theme set every key) is a content decision, explicitly left out of
+this typing pass.
+
+Verified the same way as the no-value-changed brush batch above:
+`vue-tsc -p tsconfig.lib.json --noEmit` clean (all ~358 inferred types
+were confirmed correct by the compiler accepting every one of the 5 themes'
+real values with zero errors - a strong cross-check on the type-inference
+script itself, not just an assertion), `build`/`build:lib` succeed, `npx
+vitest run` 242/242 pass, and every theme file's diff against its pre-edit
+version is 3 lines (one new import, one type-annotation swap) - confirmed
+via `git diff`, no literal value touched anywhere.
+
 ## Steps (for any future per-file "author a named Options interface" work
-## - `register/grid/topologytable.ts`, `register/theme`/`register/icon`/
-## `register/pattern`, or revisiting a brush/widget with a real behavior
-## change - same steps Priority 5a's widgets and 5b's brushes went through)
+## - revisiting a brush/widget/grid with a real behavior change, or a new
+## theme/icon/pattern file - same steps Priority 5a/5b and the grid/icon/
+## pattern/theme batch above went through)
 
 1. Read the file fully, including its `_OWN_DEFAULTS` object and any
    file-header porting-history comment.
