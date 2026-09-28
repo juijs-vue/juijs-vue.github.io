@@ -217,7 +217,35 @@ demo), so these are being converted one at a time rather than in bulk.
 
       Verified zero console errors/NaN transforms on this demo AND on a
       full regression sweep of every previously-completed gallery demo.
-- [ ] stockinfo
+- [x] `stockinfo` -> `web/src/pages/gallery/StockInfo.vue` (commit
+      `6dd98df`) - Nasdaq 100 daily data (1985/11/01-2012/06/29, 6724
+      rows) across 3 cross-filtering charts (Yearly Performance bubble
+      chart - click a year to filter the other 3; Summary Information:
+      pie/donut/bar/column; Monthly Index Abs Move & Volume: 2 area
+      series + a zoomscroll drag-to-zoom widget) plus a Daily Stock Table
+      (DataGrid). Query helpers ported 1:1 into `stockinfo/util.ts`.
+
+      `data.js` (1.2MB, ~6700 literal rows) is genuinely NOT ported -
+      stays on disk exactly where it is, loaded at runtime via a plain
+      injected `<script>` tag (real JS syntax, `var data = [...]`, not
+      JSON - matches the legacy demo's own loading method exactly).
+
+      Real bug found and fixed: data loading is now genuinely
+      asynchronous (unlike the legacy's synchronous `<script>` tag
+      ordering), so the dashboard is gated behind `v-if="dataReady"` -
+      but Vue batches the DOM update from `dataReady.value = true`, so
+      calling the imperative chart-update functions immediately
+      afterward found `getBuilder()` still null and silently no-op'd - 3
+      of the 4 panels rendered as empty/flat shapes (the query functions
+      themselves computed correct, non-NaN data throughout - confirmed
+      via direct evaluation - only the timing was wrong). Fixed with an
+      `await nextTick()`.
+
+      Verified zero console errors/NaN transforms, all 4 panels + the
+      6724-row table render correctly, and the full cross-filter
+      interaction works end-to-end (year click -> summary/volume/table
+      filter + custom hover tooltip popover). Also re-ran a full
+      regression sweep across every previously-completed gallery demo.
 - [ ] svgpen
 
 No particular order was requested - smallest-first is a reasonable default.
