@@ -30,7 +30,8 @@ const NATIVE_DEMOS: Record<string, string> = {
     gps: "GPS",
     "messi-vs-ronaldo": "MessiVsRonaldo",
     realtime: "RealTime",
-    stockinfo: "StockInfo"
+    stockinfo: "StockInfo",
+    svgpen: "SvgPen"
 }
 
 const nativeDemos = import.meta.glob("./gallery/*.vue")
