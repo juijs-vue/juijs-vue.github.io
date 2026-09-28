@@ -44,7 +44,7 @@ const nativeComponent = computed(() => {
 
 const sourceUrl = computed(() =>
     nativeComponent.value
-        ? `https://github.com/juijs-vue/www.jui-vue.io/tree/vue3/web/src/pages/gallery/${nativeComponentName.value}.vue`
+        ? `https://github.com/juijs-vue/juijs-vue.github.io/tree/main/web/src/pages/gallery/${nativeComponentName.value}.vue`
         : `https://github.com/juijs/www.jui.io/tree/master/gallery/${galleryId.value}`
 )
 </script>

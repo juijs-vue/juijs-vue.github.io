@@ -1,4 +1,4 @@
-name: Deploy www.jui-vue.io to GitHub Pages
+name: Deploy site to GitHub Pages
 
 on:
   push:
@@ -18,11 +18,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # www.jui-vue.io/web depends on jui-chart-vue, jui-grid-vue and jui-ui-vue via
-      # "file:../../<name>" links, and those in turn depend on jui-graph-ts and
-      # jui-core-ts the same way - none of these are published to npm yet, so every
-      # sibling has to be checked out and built here, in dependency order, exactly
-      # like local development already expects them to sit next to each other on disk.
+      # The site source lives in THIS repo now (web/, gallery/, play/, lib/, res/) - only
+      # the 5 not-yet-published-to-npm library dependencies (consumed via "file:../../<name>"
+      # links from web/package.json) still need to be checked out as siblings, in dependency
+      # order, exactly like local development already expects them to sit next to each other
+      # on disk. Checked out to `site/` (not the workspace root) so those relative "../../"
+      # links still resolve correctly against the sibling checkouts below.
+      - uses: actions/checkout@v4
+        with:
+          path: site
+
       - uses: actions/checkout@v4
         with:
           repository: juijs-vue/jui-core-ts
@@ -48,14 +53,6 @@ jobs:
           repository: juijs-vue/jui-grid-vue
           path: jui-grid-vue
 
-      # This is the site being deployed - developed on `vue3` until the Vue3 port
-      # is finished and merged to the default branch.
-      - uses: actions/checkout@v4
-        with:
-          repository: juijs-vue/www.jui-vue.io
-          ref: vue3
-          path: www.jui-vue.io
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -66,7 +63,7 @@ jobs:
             jui-chart-vue/package-lock.json
             jui-ui-vue/package-lock.json
             jui-grid-vue/package-lock.json
-            www.jui-vue.io/web/package-lock.json
+            site/web/package-lock.json
 
       - name: Build jui-core-ts (local dependency)
         working-directory: jui-core-ts
@@ -98,15 +95,15 @@ jobs:
           npm ci
           npm run build:lib
 
-      - name: Build www.jui-vue.io's site
-        working-directory: www.jui-vue.io/web
+      - name: Build the site
+        working-directory: site/web
         run: |
           npm ci
           npm run build
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: www.jui-vue.io/web/dist
+          path: site/web/dist
 
   deploy:
     needs: build

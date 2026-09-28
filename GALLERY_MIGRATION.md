@@ -1,4 +1,11 @@
-# Gallery migration (vue3 branch)
+# Gallery migration
+
+> This file (and the site source it describes) used to live in the separate
+> `www.jui-vue.io` repo, on its `vue3` branch - merged into this repo
+> directly (history preserved) since this IS the org's Pages site. Commit
+> hashes cited below as "www.jui-vue.io commit `...`" predate that move;
+> they're the same commits, just also reachable from this repo's history now.
+> New commits are cited without that prefix.
 
 Tracks converting `gallery/*` (11 legacy jQuery + jui.chart/jui.grid/jui.ui demo
 mini-apps, currently embedded via `<iframe>` in `GalleryView.vue`) to native
