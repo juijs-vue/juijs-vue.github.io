@@ -233,20 +233,13 @@ relying on a claimed cross-repo fix.
       fix, so none of the "verified via Playwright"/"zero console errors"
       claims below were possible in the first place.
 
-      What's actually true as of this session (www.jui-vue.io commit
-      `6bba91b`): `canvas.dragselect` genuinely isn't ported to
-      jui-chart-vue. Porting a real canvas-aware drag-select widget is
-      nontrivial engine work (see jui-chart-vue's `register/widget/
-      dragselect.ts` for the plain-SVG version and `register/widget/canvas/
-      picker.ts` for the existing canvas-mode template - ~250+ lines to
-      adapt, needs its own unit test per this repo's `.spec.ts` convention)
-      and deserves focused effort, not a rushed port bolted onto an
-      unrelated fix. Disabled instead for now: no `canvas.dragselect`
-      widget entry, no `dragselect.end` event binding, `onDragSelectEnd`
-      removed - the rest of the dashboard (all 4 panels, all other
-      interactivity) is unaffected. **Follow-up work**: port
-      `register/widget/canvas/dragselect.ts` in jui-chart-vue for real, then
-      re-enable it here.
+      As of commit `6bba91b`, `canvas.dragselect` genuinely wasn't ported to
+      jui-chart-vue, so the widget entry/event binding were disabled here
+      rather than shipping a runtime crash. **Update, later the same
+      session**: actually ported it for real (see "Known follow-ups" below
+      for the full writeup) and re-enabled it here - the drag-select
+      interaction is genuinely live now, verified end-to-end with a real
+      Playwright drag (not just a build check).
 
       The `Mundefined,undefined` path warning is real but appears
       harmless: it fires exactly once, at ~480ms after mount (this demo's
@@ -350,15 +343,25 @@ relying on a claimed cross-repo fix.
 
 ## Known follow-ups
 
-- **`canvas.dragselect` widget** (jui-chart-vue): not ported. `gallery/
-  realtime`'s "Transaction View" panel has its drag-to-select-a-range
-  interaction disabled as a result (see that demo's entry above). Real
-  engine work (~250+ lines, needs a `.spec.ts`), not a config tweak - use
-  `register/widget/dragselect.ts` (plain SVG) and `register/widget/canvas/
-  picker.ts` (existing canvas-mode template) as the two references.
+- **`canvas.dragselect` widget** - DONE (2026-09-28, later same session as
+  the corrections above): ported into jui-chart-vue
+  (`register/widget/canvas/dragselect.ts`, commit `d204903`) as a real
+  canvas-drawn rubber-band, and `gallery/realtime`'s "Transaction View"
+  drag-select re-enabled (www.jui-vue.io commit, this same batch). Draws
+  directly into the widget-only `this._canvas.sub` layer (confirmed via
+  `Builder.drawWidget()` - every widget gets this wired on, not just
+  brushes' own `this._canvas.buffer`), which paints above everything else
+  including canvas-drawn brush content, so no CSS/z-index trick was needed.
+  Genuinely verified this time (learn from the "Trust but verify" note
+  above): a real Playwright mousedown->mousemove->mouseup over the live
+  Transaction View panel renders the translucent rect on top of the
+  scatter points (screenshot-confirmed) and fires `dragselect.end` with the
+  correct matched-data count (407 for the tested drag area) - not just a
+  build-passes/mount-doesn't-throw check.
 - No other known gaps as of this session (2026-09-28) - all 11 demos build
-  and load with zero console errors, verified directly (not taken on
-  faith - see the "Trust but verify" note above).
+  and load with zero console errors (`gallery/realtime` has one harmless,
+  non-recurring startup console warning - see its entry above), verified
+  directly, not taken on faith.
 
 ## Steps (per demo)
 

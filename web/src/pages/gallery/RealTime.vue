@@ -12,12 +12,13 @@
 // the first 1-3s after mount, same as the original).
 //
 // The legacy demo's "transaction view" panel supports drag-select (rubber-band a time range,
-// see onDragSelectEnd below) via `chart.widget.canvas.dragselect` - jui-chart-vue only has the
-// plain SVG "dragselect" widget so far (a canvas-mode chart stacks its <canvas> elements ON TOP
-// of the SVG layer, so the SVG widget's rubber-band rect would render invisibly underneath it;
-// porting a canvas-aware variant is real engine work, not a config tweak - tracked in
-// GALLERY_MIGRATION.md, not done here). Disabled for now (no widget entry, no event binding)
-// rather than shipping a JUI_CRITICAL_ERR at runtime - everything else in this demo is unaffected.
+// see onDragSelectEnd below) via `chart.widget.canvas.dragselect` - now ported into jui-chart-vue
+// itself (`register/widget/canvas/dragselect.ts`, that repo) as a real canvas-mode widget: a
+// canvas-mode chart stacks its <canvas> elements ON TOP of the SVG layer, so the plain SVG
+// "dragselect" widget's rubber-band rect would have rendered invisibly underneath it - the ported
+// variant draws directly into the widget-only "sub" canvas layer instead (paints above everything,
+// brush content included, and is cleared/redrawn on its own without touching the brushes' own
+// "buffer" canvas). Event wiring/data-search logic is identical to the SVG version.
 import { onBeforeUnmount, onMounted, ref } from "vue"
 import { Chart } from "jui-chart-vue"
 import { timeUtil } from "jui-graph-ts"
@@ -172,10 +173,15 @@ const bottomWidget = [
     { type: "title", text: "HOURLY CALL COUNT", dx: -10, dy: -7, axis: 0, align: "start" },
     { type: "title", text: "HOURLY VISITOR", dx: -10, dy: -7, axis: 1, align: "start" },
     { type: "title", text: "TRANSACTION VIEW", dx: -10, dy: -7, axis: 2, align: "start" },
-    // "canvas.dragselect" isn't ported yet - see the header comment.
+    { type: "canvas.dragselect", brush: [4] },
     { type: "cross", xFormat: (d: unknown) => d, axis: 0 },
     { type: "cross", xFormat: (d: unknown) => d, axis: 1 }
 ]
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function onDragSelectEnd(data: any[]) {
+    alert(data.length)
+    console.log(data)
+}
 
 // --- visitor_map: world-map bubble chart ---------------------------------------------------------
 const mapAxis = [{ map: { path: mapPath, width: 1040, height: 630, scale: 1.5 } }]
@@ -344,6 +350,7 @@ onBeforeUnmount(() => {
                             :brush="bottomBrush"
                             :widget="bottomWidget"
                             :style="dashboardStyle"
+                            :event="{ 'dragselect.end': onDragSelectEnd }"
                             :render="false"
                         />
                     </div>
