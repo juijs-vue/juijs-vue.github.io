@@ -196,7 +196,7 @@ function goHome() {
             </div>
             <div class="content" :class="{ fullscreen }">
                 <div class="repl-toolbar">
-                    <a class="btn btn-api" title="Chart API" href="http://api.jui.io/" target="_blank">API</a>
+                    <a class="btn btn-api" title="Chart API" href="https://jui-api-doc.appspot.com/" target="_blank">API</a>
                     <a class="btn btn-fullscreen" title="Full Screen" @click="fullscreen = !fullscreen"><i class="icon-new-window"></i></a>
                 </div>
                 <div class="repl-wrap">

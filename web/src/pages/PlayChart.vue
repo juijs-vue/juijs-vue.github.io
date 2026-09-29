@@ -790,7 +790,7 @@ function goHome() {
                                 <input type="file" accept="application/json" @change="importTheme" />
                             </label>
                         </template>
-                        <a class="btn small btn-api" title="Chart API" href="http://api.jui.io/" target="_blank">API</a>
+                        <a class="btn small btn-api" title="Chart API" href="https://jui-api-doc.appspot.com/" target="_blank">API</a>
                         <a class="btn small btn-fullscreen" title="Full Screen" @click="fullscreen = !fullscreen"><i class="icon-new-window"></i></a>
                     </div>
                 </div>

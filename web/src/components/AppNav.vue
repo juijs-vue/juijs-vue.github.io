@@ -42,7 +42,7 @@ useSwipeClose(menuWindowEl, () => {
                 <a :href="`${base}play/ui/`" target="_blank">Components</a>
                 <a :href="`${base}play/chart/`" target="_blank">Chart Play</a>
                 <a :href="pageHref('gallery')">Gallery</a>
-                <a href="http://api.jui.io" target="_blank">API</a>
+                <a href="https://jui-api-doc.appspot.com/" target="_blank">API</a>
             </span>
 
             <span class="menu menu-right">
@@ -66,7 +66,7 @@ useSwipeClose(menuWindowEl, () => {
                 <li><a :href="`${base}play/ui/`" target="_blank">Components</a></li>
                 <li><a :href="`${base}play/chart/`" target="_blank">Chart Play</a></li>
                 <li><a :href="pageHref('gallery')" @click="menuOpen = false">Gallery</a></li>
-                <li><a href="http://api.jui.io" target="_blank">API</a></li>
+                <li><a href="https://jui-api-doc.appspot.com/" target="_blank">API</a></li>
             </ul>
         </div>
     </div>
