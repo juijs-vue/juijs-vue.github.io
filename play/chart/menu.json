@@ -53,6 +53,7 @@
 		{ "type": "grid3", "title" : "Date Block + Range", "code" : "grid_dateblock_range" },
 		{ "type": "grid3", "title" : "Date + Range", "code" : "grid_date_range" },
 		{ "type": "grid3", "title" : "Block + Log", "code" : "grid_block_log" },
+		{ "type": "grid3", "title" : "Rule Grid", "code" : "grid_rule" },
 		{ "type": "morechart", "title" : "Sales Pyramid", "code" : "pyramid" },
 		{ "type": "morechart", "title" : "Sales Pyramid (Reverse)", "code" : "pyramid_reverse" },
 		{ "type": "morechart", "title" : "HUD Bar", "code" : "hud_bar" },
